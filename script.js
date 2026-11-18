@@ -353,6 +353,7 @@
 
     initNavigationAndTheme();
     initSelectedWorksAccordion();
+    initWorksWaveDock();
     initModals();
     restoreRouteFromLocation();
     initScrollAnimations();
@@ -742,6 +743,118 @@
         '</div>';
       grid.appendChild(card);
     });
+  }
+
+  // 4b. Hero Works Wave Dock: 6 chained icons moving as one water wave
+  function initWorksWaveDock() {
+    const dock = document.getElementById('worksWaveDock');
+    if (!dock || dock.dataset.bound === 'true') return;
+    dock.dataset.bound = 'true';
+
+    const track = dock.querySelector('.wwd-track');
+    const items = Array.from(dock.querySelectorAll('.wwd-item'));
+    const svg = dock.querySelector('.wwd-strand');
+    const grad = svg.querySelector('#wwdGrad');
+    const paths = ['.wwd-strand-glow', '.wwd-strand-body', '.wwd-strand-shine'].map(function (s) { return svg.querySelector(s); });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let width = 0, height = 0, centers = [];
+    let amp = 0, phase = 0, last = 0, raf = 0;
+    let visible = false, engaged = false, lastType = 'mouse', wasOn = false;
+
+    function measure() {
+      width = track.offsetWidth;
+      height = track.offsetHeight;
+      svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+      grad.setAttribute('x2', width);
+      centers = items.map(function (it) { return it.offsetLeft + it.offsetWidth / 2; });
+      draw(items.map(function () { return 0; }));
+    }
+
+    function draw(ys) {
+      if (!centers.length) return;
+      const cy = height / 2;
+      const pts = [{ x: centers[0] - 26, y: cy + ys[0] }];
+      centers.forEach(function (x, i) { pts.push({ x: x, y: cy + ys[i] }); });
+      pts.push({ x: centers[centers.length - 1] + 26, y: cy + ys[ys.length - 1] });
+      let d = 'M' + pts[0].x.toFixed(1) + ',' + pts[0].y.toFixed(1);
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+        d += ' C' + (p1.x + (p2.x - p0.x) / 6).toFixed(1) + ',' + (p1.y + (p2.y - p0.y) / 6).toFixed(1) +
+             ' ' + (p2.x - (p3.x - p1.x) / 6).toFixed(1) + ',' + (p2.y - (p3.y - p1.y) / 6).toFixed(1) +
+             ' ' + p2.x.toFixed(1) + ',' + p2.y.toFixed(1);
+      }
+      paths.forEach(function (p) { p.setAttribute('d', d); });
+    }
+
+    function frame(t) {
+      raf = 0;
+      const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
+      last = t;
+      phase += dt * 2.1;
+      const target = engaged ? 0 : (window.innerWidth <= 900 ? 9 : 13);
+      amp += (target - amp) * Math.min(1, dt * 7);
+      const ys = items.map(function (_, i) {
+        return Math.sin(phase - i * 0.85) * amp + Math.sin(phase * 0.6 - i * 1.7 + 1.2) * amp * 0.35;
+      });
+      items.forEach(function (it, i) { it.style.transform = 'translate3d(0,' + ys[i].toFixed(2) + 'px,0)'; });
+      draw(ys);
+      if (visible) raf = requestAnimationFrame(frame);
+    }
+
+    function start() { if (!raf && visible && !reduceMotion) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+    function setOn(item) {
+      items.forEach(function (it) { it.classList.toggle('is-on', it === item); });
+      dock.classList.add('is-engaged');
+      engaged = true;
+      const label = item.querySelector('.wwd-label');
+      label.style.setProperty('--shift', '0px');
+      const r = label.getBoundingClientRect();
+      const shift = Math.max(8 - r.left, 0) + Math.min(window.innerWidth - 8 - r.right, 0);
+      label.style.setProperty('--shift', shift + 'px');
+      if (reduceMotion) draw(items.map(function () { return 0; }));
+    }
+    function clearOn() {
+      items.forEach(function (it) { it.classList.remove('is-on'); });
+      dock.classList.remove('is-engaged');
+      engaged = false;
+    }
+
+    items.forEach(function (item) {
+      item.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch') setOn(item); });
+      item.addEventListener('pointerdown', function (e) { lastType = e.pointerType; wasOn = item.classList.contains('is-on'); });
+      item.addEventListener('click', function () {
+        if (lastType === 'touch' && !wasOn) { setOn(item); return; }
+        const idx = parseInt(item.dataset.index, 10);
+        if (typeof window.activateWorkCard === 'function') window.activateWorkCard(idx);
+        if (typeof window.navigateToPage === 'function') window.navigateToPage(item.dataset.page, item.dataset.filter);
+      });
+    });
+    track.addEventListener('pointerleave', function (e) { if (e.pointerType !== 'touch') clearOn(); });
+    dock.addEventListener('focusin', function (e) {
+      const it = e.target.closest('.wwd-item');
+      if (it && it.matches(':focus-visible')) setOn(it);
+    });
+    dock.addEventListener('focusout', function () {
+      setTimeout(function () { if (!dock.contains(document.activeElement)) clearOn(); }, 0);
+    });
+    document.addEventListener('pointerdown', function (e) { if (!dock.contains(e.target)) clearOn(); });
+
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(track);
+    window.addEventListener('resize', measure);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting && !document.hidden;
+        if (visible) { measure(); start(); }
+      }, { threshold: 0.05 }).observe(dock);
+    } else { visible = true; }
+    document.addEventListener('visibilitychange', function () {
+      visible = !document.hidden && dock.getClientRects().length > 0;
+      if (visible) start();
+    });
+    measure();
+    start();
   }
 
   // 5. Second Canvas: 6 Interactive Cards Accordion

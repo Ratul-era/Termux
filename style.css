@@ -2253,3 +2253,192 @@ body.dark-theme .modal-tag {
   font: 500 14px/1.5 'Plus Jakarta Sans', sans-serif;
   text-align: center;
 }
+
+/* =====================================================================
+   HERO WORKS WAVE DOCK  (6 glass-paint icons, one chained water wave)
+   ===================================================================== */
+.works-wave-dock {
+  --wwd-size: 54px;
+  --wwd-gap: 15px;
+  position: absolute;
+  left: 71%;
+  bottom: 64px;
+  translate: -50% 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.works-wave-dock.reveal-hero-item.hero-enter-sync { animation-delay: 0.75s; }
+
+.wwd-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--wwd-gap);
+  padding: 24px 22px;
+  pointer-events: auto;
+}
+
+/* cloudy mist behind the chain */
+.wwd-mist {
+  position: absolute;
+  inset: -14px -46px -10px;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(16px);
+  opacity: 0.95;
+  background:
+    radial-gradient(58% 72% at 16% 56%, rgba(255, 255, 255, 0.88), transparent 70%),
+    radial-gradient(52% 80% at 50% 38%, rgba(255, 226, 205, 0.92), transparent 72%),
+    radial-gradient(58% 72% at 86% 58%, rgba(255, 255, 255, 0.82), transparent 70%);
+  animation: wwdMistDrift 14s ease-in-out infinite alternate;
+}
+body.dark-theme .wwd-mist {
+  opacity: 0.9;
+  background:
+    radial-gradient(58% 72% at 16% 56%, rgba(72, 70, 80, 0.78), transparent 70%),
+    radial-gradient(52% 80% at 50% 38%, rgba(244, 154, 58, 0.2), transparent 72%),
+    radial-gradient(58% 72% at 86% 58%, rgba(52, 52, 60, 0.82), transparent 70%);
+}
+@keyframes wwdMistDrift {
+  from { transform: translate3d(-10px, 2px, 0) scale(1); }
+  to   { transform: translate3d(12px, -3px, 0) scale(1.05); }
+}
+
+/* liquid strand through all icons */
+.wwd-strand {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+}
+.wwd-strand path { stroke-linecap: round; stroke-linejoin: round; }
+.wwd-strand-glow  { stroke: url(#wwdGrad); stroke-width: 16; opacity: 0.4; filter: blur(6px); }
+.wwd-strand-body  { stroke: url(#wwdGrad); stroke-width: 7;  opacity: 0.9; }
+.wwd-strand-shine {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.8;
+  stroke-dasharray: 3 14;
+  animation: wwdFlow 1.6s linear infinite;
+}
+@keyframes wwdFlow { to { stroke-dashoffset: -34; } }
+
+.wwd-item {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: var(--wwd-size);
+  height: var(--wwd-size);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.wwd-bubble {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  color: #fff;
+  font-size: calc(var(--wwd-size) * 0.38);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.95) 0 5%, rgba(255, 255, 255, 0.3) 6% 18%, transparent 36%),
+    radial-gradient(circle at 72% 88%, rgba(255, 255, 255, 0.3), transparent 46%),
+    linear-gradient(150deg, var(--c1), var(--c2));
+  box-shadow:
+    inset 0 -7px 14px rgba(0, 0, 0, 0.2),
+    inset 0 5px 10px rgba(255, 255, 255, 0.5),
+    0 10px 22px -4px var(--glow),
+    0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+}
+.wwd-bubble::after {
+  content: "";
+  position: absolute;
+  top: 7%; left: 17%;
+  width: 66%; height: 36%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.wwd-bubble i { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3)); position: relative; z-index: 1; }
+
+.works-wave-dock.is-engaged .wwd-item:not(.is-on) .wwd-bubble { opacity: 0.7; filter: saturate(0.85); }
+.wwd-item.is-on .wwd-bubble {
+  transform: translateY(-9px) scale(1.22);
+  box-shadow:
+    inset 0 -7px 14px rgba(0, 0, 0, 0.2),
+    inset 0 5px 10px rgba(255, 255, 255, 0.55),
+    0 16px 30px -4px var(--glow),
+    0 0 0 5px rgba(255, 255, 255, 0.22);
+}
+.wwd-item:active .wwd-bubble { transform: translateY(-5px) scale(1.1); }
+
+/* label: only the pointed icon shows it */
+.wwd-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  translate: var(--shift, 0px) 0;
+  transform: translateX(-50%) translateY(8px);
+  padding: 7px 14px 8px;
+  border-radius: 14px;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.25;
+  color: #212328;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid var(--c2);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 24px -8px var(--glow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+body.dark-theme .wwd-label { color: #fff; background: rgba(26, 27, 32, 0.88); }
+.wwd-label b { display: block; font-size: 0.82rem; font-weight: 800; }
+.wwd-label small {
+  display: block;
+  margin-top: 1px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c2);
+}
+.wwd-item.is-on .wwd-label { opacity: 1; transform: translateX(-50%) translateY(-14px); }
+
+@media (max-width: 900px) {
+  .works-wave-dock {
+    --wwd-size: 44px;
+    --wwd-gap: 9px;
+    position: relative;
+    left: auto; bottom: auto;
+    translate: none;
+    align-self: center;
+    margin: -34px auto 4px;
+  }
+  .wwd-track { padding: 22px 14px; }
+  .wwd-mist { inset: -10px -26px -8px; }
+  .wwd-label { padding: 6px 11px 7px; }
+  .wwd-label b { font-size: 0.74rem; }
+  .wwd-label small { font-size: 0.56rem; }
+  .wwd-strand-body { stroke-width: 5.5; }
+}
+@media (max-width: 380px) {
+  .works-wave-dock { --wwd-size: 40px; --wwd-gap: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wwd-mist, .wwd-strand-shine { animation: none; }
+  .wwd-bubble, .wwd-label { transition-duration: 0.01s; }
+}
