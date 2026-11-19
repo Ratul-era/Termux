@@ -147,8 +147,8 @@
       ]
     },
     'model': {
-      filename: 'miniature_models',
-      title: 'Miniature Model Making',
+      filename: 'Models',
+      title: 'Architectural Model Making',
       subtitle: 'Handcrafted physical architectural scale models, contour site topography, and illuminated presentation maquettes.',
       filters: [{ key: 'all', label: 'All Physical Models' }],
       projects: [
@@ -187,7 +187,7 @@
     '3Dvis': '3Dvisualization',
     'AW': 'Animation_Walkthrough',
     'exp': 'experience',
-    'model': 'miniature_models',
+    'model': 'Models',
     'studio': 'studio'
   };
 
@@ -354,6 +354,7 @@
     initNavigationAndTheme();
     initSelectedWorksAccordion();
     initWorksWaveDock();
+    initArchDropCue();
     initModals();
     restoreRouteFromLocation();
     initScrollAnimations();
@@ -756,11 +757,11 @@
     const svg = dock.querySelector('.wwd-strand');
     const grad = svg.querySelector('#wwdGrad');
     const paths = ['.wwd-strand-glow', '.wwd-strand-body', '.wwd-strand-shine'].map(function (s) { return svg.querySelector(s); });
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.5 : 1;
 
     let width = 0, height = 0, centers = [];
     let amp = 0, phase = 0, last = 0, raf = 0;
-    let visible = false, engaged = false, lastType = 'mouse', wasOn = false;
+    let visible = true, engaged = false, lastType = 'mouse', wasOn = false;
 
     function measure() {
       width = track.offsetWidth;
@@ -792,7 +793,7 @@
       const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
       last = t;
       phase += dt * 2.1;
-      const target = engaged ? 0 : (window.innerWidth <= 900 ? 9 : 13);
+      const target = engaged ? 0 : (window.innerWidth <= 900 ? 9 : 13) * calm;
       amp += (target - amp) * Math.min(1, dt * 7);
       const ys = items.map(function (_, i) {
         return Math.sin(phase - i * 0.85) * amp + Math.sin(phase * 0.6 - i * 1.7 + 1.2) * amp * 0.35;
@@ -802,7 +803,7 @@
       if (visible) raf = requestAnimationFrame(frame);
     }
 
-    function start() { if (!raf && visible && !reduceMotion) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+    function start() { if (!raf && visible) { last = performance.now(); raf = requestAnimationFrame(frame); } }
 
     function setOn(item) {
       items.forEach(function (it) { it.classList.toggle('is-on', it === item); });
@@ -813,7 +814,6 @@
       const r = label.getBoundingClientRect();
       const shift = Math.max(8 - r.left, 0) + Math.min(window.innerWidth - 8 - r.right, 0);
       label.style.setProperty('--shift', shift + 'px');
-      if (reduceMotion) draw(items.map(function () { return 0; }));
     }
     function clearOn() {
       items.forEach(function (it) { it.classList.remove('is-on'); });
@@ -855,6 +855,206 @@
     });
     measure();
     start();
+  }
+
+  // 4c. PC only: scroll cue story. A colorful drop melts off the dock's left edge, swirls,
+  // draws a fine-line modern tower in ribbon, then falls into the scroll button (impact every time)
+  function initArchDropCue() {
+    const svg = document.getElementById('wwdArch');
+    const dock = document.getElementById('worksWaveDock');
+    const cue = document.querySelector('.scroll-down-indicator');
+    const canvas = document.querySelector('.hero-canvas');
+    if (!svg || !dock || !cue || !canvas || svg.dataset.bound === 'true') return;
+    svg.dataset.bound = 'true';
+
+    const mq = window.matchMedia('(min-width: 901px)');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const pA = svg.querySelector('.wwd-path-a');
+    const pC = svg.querySelector('.wwd-path-c');
+    const ribbons = Array.from(svg.querySelectorAll('.wwd-path-b'));
+    const pB = ribbons[0];
+    const grad = svg.querySelector('#wwdRibbonGrad');
+    const drop = svg.querySelector('.wwd-drop');
+    const body = svg.querySelector('.wwd-drop-body');
+    const spec = svg.querySelector('.wwd-drop-spec');
+    const splash = Array.from(svg.querySelectorAll('.wwd-splash'));
+    const cap = svg.querySelector('.wwd-caption');
+    const firstItem = dock.querySelector('.wwd-item');
+    const track = dock.querySelector('.wwd-track');
+    const cueSvg = cue.querySelector('svg');
+
+    const T = 7000;
+    let LA = 0, LB = 0, LC = 0, S = { x: 0, y: 0 }, IMP = { x: 0, y: 0 };
+    let raf = 0, t0 = 0, lastCycle = -1, hit = false, visible = true, ready = false, hitTimer = 0;
+
+    const easeIO = function (k) { return k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; };
+    const easeIn = function (k) { return k * k * k; };
+    const easeOut = function (k) { return 1 - Math.pow(1 - k, 3); };
+    const clamp01 = function (k) { return Math.max(0, Math.min(1, k)); };
+
+    function layout() {
+      if (!mq.matches || reduce.matches) return false;
+      const c = canvas.getBoundingClientRect();
+      const f = firstItem.getBoundingClientRect();
+      const tr = track.getBoundingClientRect();
+      const a = cueSvg.getBoundingClientRect();
+      if (!c.width || !f.width || !a.width) return false;
+      const sx = f.left - c.left - 6;
+      const sy = tr.top - c.top + tr.height / 2;
+      const ex = a.left - c.left + a.width / 2;
+      const ey = a.top - c.top + a.height / 2;
+      const k = 0.86;                              // tower scale
+      const ax = ex + 6, ay = ey - 66;             // tower base center
+      const X = function (v) { return (ax + v * k).toFixed(1); };
+      const Y = function (v) { return (ay + v * k).toFixed(1); };
+      const lx = ax + 34, ly = ay - 118, r = 12;
+      S = { x: sx, y: sy };
+      IMP = { x: ex, y: ey - 20 };
+      svg.setAttribute('viewBox', '0 0 ' + c.width + ' ' + c.height);
+      grad.setAttribute('x1', ax - 30); grad.setAttribute('x2', ax + 30);
+
+      // drop route: dock edge -> swirl -> tower base-left
+      pA.setAttribute('d',
+        'M' + sx + ',' + sy + ' C' + (sx - 26) + ',' + (sy - 30) + ' ' + (lx + 30) + ',' + (ly + 10) + ' ' + lx + ',' + ly +
+        ' a' + r + ',' + r + ' 0 1,1 ' + (-2 * r) + ',0 a' + r + ',' + r + ' 0 1,1 ' + (2 * r) + ',0' +
+        ' C' + (lx - 6) + ',' + (ly + 34) + ' ' + (ax - 44) + ',' + (ay - 30) + ' ' + X(-32) + ',' + Y(0));
+
+      // fine-line skyscraper that rises floor by floor: ground, podium, tower outline,
+      // then floor lines stacking up in a serpentine, finishing with a spire
+      const pts = [[-38,0],[38,0],[34,0],[34,-14],[-34,-14],[-34,0],[-14,0],[-14,-64],[14,-64],[14,0],[14,-14],
+                   [-14,-14],[-14,-24],[14,-24],[14,-34],[-14,-34],[-14,-44],[14,-44],[14,-54],[-14,-54],[-14,-64],[0,-64],[0,-84]];
+      const tower = 'M' + pts.map(function (p) { return X(p[0]) + ',' + Y(p[1]); }).join(' L');
+      ribbons.forEach(function (p) { p.setAttribute('d', tower); });
+      cap.setAttribute('x', ax.toFixed(1)); cap.setAttribute('y', (ay - 84 * k - 12).toFixed(1));
+
+      // drop falls from the crown of the tower into the button
+      const tx = ax, ty = ay - 84 * k;
+      pC.setAttribute('d', 'M' + tx.toFixed(1) + ',' + ty.toFixed(1) + ' C' + tx.toFixed(1) + ',' + (ty + 50).toFixed(1) +
+        ' ' + ex + ',' + (ey - 70) + ' ' + ex + ',' + (ey - 22));
+      LA = pA.getTotalLength(); LB = pB.getTotalLength(); LC = pC.getTotalLength();
+      return true;
+    }
+
+    function seg(p, L, from, to, op) {
+      const len = to - from;
+      if (len < 0.8) { p.style.opacity = 0; return; }
+      p.style.opacity = op === undefined ? 1 : op;
+      p.style.strokeDasharray = len + ' ' + (L * 2);
+      p.style.strokeDashoffset = -from;
+    }
+    function hide(p) { p.style.opacity = 0; }
+
+    function fireImpact() {
+      hit = true;
+      cue.classList.remove('is-hit');
+      void cue.offsetWidth;                        // restart the CSS animation every time
+      cue.classList.add('is-hit');
+      clearTimeout(hitTimer);
+      hitTimer = setTimeout(function () { cue.classList.remove('is-hit'); }, 1100);
+    }
+
+    function render(q) {
+      const hue = (q * 420 + 15) % 360;
+      const col = 'hsl(' + hue + ' 95% 55%)';
+      pA.style.stroke = col; pC.style.stroke = col;
+      let pos = null, r = 0, stretch = 1, capOp = 0;
+      hide(pA); hide(pC); ribbons.forEach(hide);
+
+      if (q < 0.12) {                              // 1. MELT: edge swells and stretches
+        const k = easeOut(q / 0.12);
+        r = 7 * k; stretch = 1 + 0.4 * k;
+        pos = { x: S.x, y: S.y + 3 * k };
+      } else if (q < 0.32) {                       // 2. SWIRL: pinches off and loops
+        const k = easeIO((q - 0.12) / 0.20);
+        pos = pA.getPointAtLength(LA * k); r = 7 - 1.5 * k;
+        seg(pA, LA, Math.max(0, LA * k - 48), LA * k, 0.7);
+      } else if (q < 0.48) {                       // 3. BUILD: fast fine-line tower
+        const k = easeIO(clamp01((q - 0.32) / 0.16));
+        pos = pB.getPointAtLength(LB * k); r = 4.5;
+        ribbons.forEach(function (p) { seg(p, LB, 0, LB * k); });
+        capOp = clamp01((k - 0.7) / 0.3);
+      } else if (q < 0.60) {                       // 4. HOLD
+        const k = (q - 0.48) / 0.12;
+        pos = pB.getPointAtLength(LB); r = 4.5 + Math.sin(k * Math.PI) * 1.4;
+        pos = { x: pos.x, y: pos.y - Math.sin(k * Math.PI) * 4 };
+        ribbons.forEach(function (p) { seg(p, LB, 0, LB); });
+        capOp = 1;
+      } else if (q < 0.72) {                       // 5. DROP: tower melts, drop falls in
+        const k = clamp01((q - 0.60) / 0.12);
+        const e = easeIn(k);
+        pos = pC.getPointAtLength(LC * e); r = 4.5 + 1.2 * e;
+        seg(pC, LC, Math.max(0, LC * e - 40), LC * e, 0.85);
+        ribbons.forEach(function (p) { seg(p, LB, LB * easeIO(k), LB, 1 - k * 0.7); });
+        capOp = clamp01(1 - k * 2);
+      }
+
+      cap.style.opacity = capOp;
+
+      // 6. IMPACT: fires every cycle the moment the drop lands
+      if (q >= 0.72 && q < 0.92 && !hit) fireImpact();
+      if (q < 0.5) hit = false;
+      if (q >= 0.72 && q < 0.86) {
+        const k = (q - 0.72) / 0.14;
+        splash.forEach(function (c, i) {
+          const ang = (-165 + i * (150 / (splash.length - 1))) * Math.PI / 180;
+          const d = easeOut(k) * (22 + (i % 3) * 7);
+          c.setAttribute('cx', (IMP.x + Math.cos(ang) * d).toFixed(1));
+          c.setAttribute('cy', (IMP.y + Math.sin(ang) * d + 26 * k * k).toFixed(1));
+          c.setAttribute('r', (3.2 * (1 - k)).toFixed(2));
+          c.style.fill = 'hsl(' + ((hue + i * 45) % 360) + ' 95% 58%)';
+        });
+      } else {
+        splash.forEach(function (c) { c.setAttribute('r', 0); });
+      }
+
+      if (pos && r > 0.2) {
+        drop.setAttribute('transform', 'translate(' + pos.x.toFixed(1) + ',' + pos.y.toFixed(1) + ')');
+        body.setAttribute('rx', r.toFixed(2)); body.setAttribute('ry', (r * stretch).toFixed(2));
+        body.style.fill = col;
+        spec.setAttribute('r', (r * 0.3).toFixed(2));
+        spec.setAttribute('cx', (-r * 0.35).toFixed(2)); spec.setAttribute('cy', (-r * 0.35 * stretch).toFixed(2));
+      } else {
+        body.setAttribute('rx', 0); body.setAttribute('ry', 0); spec.setAttribute('r', 0);
+      }
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (!visible) return;
+      if (!t0) t0 = now;
+      const elapsed = now - t0;
+      const cycle = Math.floor(elapsed / T);
+      if (cycle !== lastCycle) {
+        if (lastCycle >= 0 && !hit && ready) fireImpact();   // never skip an impact (e.g. after a throttled frame)
+        lastCycle = cycle; ready = layout(); hit = false;
+      }
+      if (ready) render((elapsed % T) / T);
+      raf = requestAnimationFrame(frame);
+    }
+    function start() { if (!raf && visible && mq.matches && !reduce.matches) raf = requestAnimationFrame(frame); }
+    function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
+
+    function sync() {
+      if (mq.matches && !reduce.matches) {
+        svg.classList.add('is-on'); lastCycle = -1; start();
+      } else {
+        stop(); svg.classList.remove('is-on'); cue.classList.remove('is-hit');
+      }
+    }
+    if (mq.addEventListener) { mq.addEventListener('change', sync); reduce.addEventListener('change', sync); }
+    window.addEventListener('resize', function () { lastCycle = -1; });
+    document.addEventListener('visibilitychange', function () {
+      visible = !document.hidden && canvas.getClientRects().length > 0;
+      if (visible) { t0 = 0; lastCycle = -1; start(); } else stop();
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting && !document.hidden;
+        if (visible) { t0 = 0; lastCycle = -1; start(); } else stop();
+      }, { threshold: 0.2 }).observe(canvas);
+    }
+    // wait for the hero entrance to settle before the first run
+    setTimeout(sync, 1800);
   }
 
   // 5. Second Canvas: 6 Interactive Cards Accordion

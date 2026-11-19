@@ -186,12 +186,12 @@
             <svg class="wwd-strand" aria-hidden="true" focusable="false">
               <defs>
                 <linearGradient id="wwdGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0">
-                  <stop offset="0%" stop-color="#ff6a18"/>
-                  <stop offset="20%" stop-color="#12b76a"/>
-                  <stop offset="40%" stop-color="#2563eb"/>
-                  <stop offset="60%" stop-color="#7c3aed"/>
-                  <stop offset="80%" stop-color="#e11d74"/>
-                  <stop offset="100%" stop-color="#f59e0b"/>
+                  <stop offset="0%" stop-color="#ff4d00"/>
+                  <stop offset="20%" stop-color="#00b85c"/>
+                  <stop offset="40%" stop-color="#0a56f0"/>
+                  <stop offset="60%" stop-color="#7a28e6"/>
+                  <stop offset="80%" stop-color="#e6086c"/>
+                  <stop offset="100%" stop-color="#ffa000"/>
                 </linearGradient>
               </defs>
               <path class="wwd-strand-glow" fill="none"/>
@@ -199,41 +199,69 @@
               <path class="wwd-strand-shine" fill="none"/>
             </svg>
 
-            <button type="button" class="wwd-item" data-index="0" data-page="3Dvis" data-filter="all" style="--c1:#ffbe85;--c2:#ff6a18;--glow:rgba(255,106,24,.55)" aria-label="3D Visualization">
+            <button type="button" class="wwd-item" data-index="0" data-page="3Dvis" data-filter="all" style="--c1:#ff9a2e;--c2:#ff4d00;--glow:rgba(255,77,0,.6)" aria-label="3D Visualization">
               <span class="wwd-label"><b>3D Visualization</b><small>Photorealistic Rendering</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-cube" aria-hidden="true"></i></span>
             </button>
-            <button type="button" class="wwd-item" data-index="1" data-page="AW" data-filter="all" style="--c1:#86f2bb;--c2:#12b76a;--glow:rgba(18,183,106,.55)" aria-label="Animation Walkthrough">
+            <button type="button" class="wwd-item" data-index="1" data-page="AW" data-filter="all" style="--c1:#2be37f;--c2:#009e50;--glow:rgba(0,158,80,.6)" aria-label="Animation Walkthrough">
               <span class="wwd-label"><b>Animation Walkthrough</b><small>Cinematic Motion</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-film" aria-hidden="true"></i></span>
             </button>
-            <button type="button" class="wwd-item" data-index="2" data-page="exp" data-filter="national" style="--c1:#86c8ff;--c2:#2563eb;--glow:rgba(37,99,235,.55)" aria-label="National Experience">
+            <button type="button" class="wwd-item" data-index="2" data-page="exp" data-filter="national" style="--c1:#3f9bff;--c2:#0047e0;--glow:rgba(0,71,224,.6)" aria-label="National Experience">
               <span class="wwd-label"><b>National Experience</b><small>RAJUK &bull; Cantonment</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-building" aria-hidden="true"></i></span>
             </button>
-            <button type="button" class="wwd-item" data-index="3" data-page="exp" data-filter="international" style="--c1:#caa8ff;--c2:#7c3aed;--glow:rgba(124,58,237,.55)" aria-label="International Experience">
+            <button type="button" class="wwd-item" data-index="3" data-page="exp" data-filter="international" style="--c1:#a96bff;--c2:#6416d6;--glow:rgba(100,22,214,.6)" aria-label="International Experience">
               <span class="wwd-label"><b>International Experience</b><small>Fiverr &amp; Upwork</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-globe" aria-hidden="true"></i></span>
             </button>
-            <button type="button" class="wwd-item" data-index="4" data-page="studio" data-filter="all" style="--c1:#ffa3cc;--c2:#e11d74;--glow:rgba(225,29,116,.55)" aria-label="Studio">
+            <button type="button" class="wwd-item" data-index="4" data-page="studio" data-filter="all" style="--c1:#ff4f9a;--c2:#d4005f;--glow:rgba(212,0,95,.6)" aria-label="Studio">
               <span class="wwd-label"><b>Studio</b><small>Working &amp; Design Drawings</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-compass-drafting" aria-hidden="true"></i></span>
             </button>
-            <button type="button" class="wwd-item" data-index="5" data-page="model" data-filter="all" style="--c1:#ffe686;--c2:#f59e0b;--glow:rgba(245,158,11,.55)" aria-label="Model Making">
+            <button type="button" class="wwd-item" data-index="5" data-page="model" data-filter="all" style="--c1:#ffd02b;--c2:#ff9500;--glow:rgba(255,149,0,.6)" aria-label="Model Making">
               <span class="wwd-label"><b>Model Making</b><small>Miniature &amp; Urban</small></span>
               <span class="wwd-bubble"><i class="fa-solid fa-building-wheat" aria-hidden="true"></i></span>
             </button>
           </div>
         </nav>
 
+        <!-- PC ONLY: drop melts off the dock's left end, swirls, ribbons a tiny building, then falls into the scroll button -->
+        <svg class="wwd-arch" id="wwdArch" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="wwdRibbonGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
+              <stop offset="0%" stop-color="#ff5a00"/>
+              <stop offset="25%" stop-color="#ff2f87"/>
+              <stop offset="50%" stop-color="#8a3dff"/>
+              <stop offset="75%" stop-color="#1f7bff"/>
+              <stop offset="100%" stop-color="#00c46a"/>
+            </linearGradient>
+          </defs>
+          <path class="wwd-trail wwd-path-a" fill="none"/>
+          <path class="wwd-trail wwd-path-c" fill="none"/>
+          <path class="wwd-ribbon wwd-ribbon-glow wwd-path-b" fill="none"/>
+          <path class="wwd-ribbon wwd-ribbon-body wwd-path-b" fill="none"/>
+          <path class="wwd-ribbon wwd-ribbon-shine wwd-path-b" fill="none"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <circle class="wwd-splash" r="0"/>
+          <text class="wwd-caption" text-anchor="middle">SELECTED WORKS</text>
+          <g class="wwd-drop">
+            <ellipse class="wwd-drop-body" rx="0" ry="0"/>
+            <circle class="wwd-drop-spec" r="0"/>
+          </g>
+        </svg>
+
         <!-- Left Content Column (Desktop) / Bottom Centered Stack (Mobile) -->
         <div class="hero-content-col">
           <!-- Top Location Pill Badge (Desktop) -->
           <div class="hero-top-pill reveal-hero-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L2 7v2h20V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-4v-7h-2v7H9v-7H5z"/>
-            </svg>
-            <span>PORTFOLIO &bull; DHAKA, BANGLADESH</span>
+            <span class="gibed-font">&bull; Myself</span>
           </div>
 
           <!-- Main Name Heading -->
@@ -260,7 +288,7 @@
                   <span class="spec-divider">|</span>
                   <span class="spec-item">🛋️ Interior Design</span>
                   <span class="spec-divider">|</span>
-                  <span class="spec-item">🏡 Miniature Model Making</span>
+                  <span class="spec-item">🏡 Architectural Model Making</span>
                   <span class="spec-divider">|</span>
                 </div>
                 <div class="specialty-group" aria-hidden="true">
@@ -270,7 +298,7 @@
                   <span class="spec-divider">|</span>
                   <span class="spec-item">🛋️ Interior Design</span>
                   <span class="spec-divider">|</span>
-                  <span class="spec-item">🏡 Miniature Model Making</span>
+                  <span class="spec-item">🏡 Architectural Model Making</span>
                   <span class="spec-divider">|</span>
                 </div>
               </div>
