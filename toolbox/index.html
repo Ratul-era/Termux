@@ -18,6 +18,7 @@
       </div>
     </div>
     <div class="tb-top-actions">
+      <span id="aiStatusPill" class="tb-status-pill connected">AI: Smart</span>
       <span id="ghStatusPill" class="tb-status-pill">GitHub: Not Connected</span>
       <a href="../index.html" class="tb-btn tb-btn-sm" style="text-decoration:none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a>
       <button type="button" id="themeToggleBtn" class="tb-btn tb-btn-sm"><i class="fa-solid fa-circle-half-stroke"></i> Theme</button>
@@ -65,39 +66,48 @@
         <div id="projectIngestBox">
           <div class="tb-grid-3">
             <div class="tb-field">
-              <label>Project Title</label>
+              <div class="tb-label-row">
+                <label for="pTitle">Project Title</label>
+                <button type="button" class="tb-auto-chip" data-autogen-field="title" title="Auto-generate Title from images, videos &amp; contents"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+              </div>
               <input id="pTitle" class="tb-input" placeholder="e.g., Hillside Duplex Residence" />
             </div>
             <div class="tb-field">
-              <label>Top-Left Label Name (e.g. Project-3)</label>
+              <label for="pLabelSlug">Top-Left Label Name (e.g. Project-3)</label>
               <input id="pLabelSlug" class="tb-input" placeholder="Project-3" />
             </div>
             <div class="tb-field">
-              <label>Project ID (Auto or Custom)</label>
+              <label for="pProjectId">Project ID (Auto or Custom)</label>
               <input id="pProjectId" class="tb-input" placeholder="PRJ-003" />
             </div>
           </div>
 
           <div class="tb-grid-2">
             <div class="tb-field">
-              <label>Google Drive Folder Link (100+ files supported)</label>
+              <label for="pDriveFolder">Google Drive Folder Link (100+ files supported)</label>
               <input id="pDriveFolder" class="tb-input" placeholder="https://drive.google.com/drive/folders/..." />
             </div>
             <div class="tb-field">
-              <label>YouTube Video Link(s) (1 per line)</label>
+              <label for="pYoutubeLinks">YouTube Video Link(s) (1 per line)</label>
               <textarea id="pYoutubeLinks" class="tb-textarea" style="min-height:46px;" placeholder="https://youtu.be/... (add [both] if interior+exterior)"></textarea>
             </div>
           </div>
 
           <div class="tb-grid-2">
             <div class="tb-field">
-              <label>Facebook Post / Video Link(s) (1 per line)</label>
+              <label for="pFbLinks">Facebook Post / Video Link(s) (1 per line)</label>
               <textarea id="pFbLinks" class="tb-textarea" style="min-height:68px;" placeholder="https://www.facebook.com/..."></textarea>
             </div>
             <div class="tb-field">
-              <label>Optional: Paste FB Post Description / Extra File URLs</label>
+              <label for="pExtraText">Optional: Paste FB Post Caption / Extra File URLs</label>
               <textarea id="pExtraText" class="tb-textarea" style="min-height:68px;" placeholder="Paste FB post text for AI detail extraction, or extra image/video URLs (1 per line)..."></textarea>
             </div>
+          </div>
+
+          <div class="tb-field">
+            <label for="pLocalSamples">Optional Visual AI Samples (Pick 1–4 local renders or a video clip — analyzed directly in browser, zero upload to GitHub)</label>
+            <input id="pLocalSamples" type="file" accept="image/*,video/*" multiple class="tb-input" style="padding:8px 10px;" />
+            <div id="pLocalSamplesInfo" style="font-size:0.76rem;color:var(--tb-muted);"></div>
           </div>
 
           <div class="tb-actions-row">
@@ -131,23 +141,47 @@
           </div>
         </div>
 
-        <!-- Shared Quick Details (applies to enabled parts or override per-part below) -->
+        <!-- Master One-Click Auto-Generate All Details -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+          <span style="font-size:0.82rem;font-weight:700;color:var(--tb-muted);">Analyze all source images, videos &amp; files to fill every box below:</span>
+          <button type="button" class="tb-btn tb-btn-ai tb-btn-sm" id="autoGenAllBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Generate All Details from Contents</button>
+        </div>
+
         <div class="tb-grid-3" style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--tb-border);">
           <div class="tb-field">
-            <label>Date</label>
+            <div class="tb-label-row">
+              <label for="dDate">Date</label>
+              <button type="button" class="tb-auto-chip" data-autogen-field="date"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="dDate" class="tb-input" placeholder="e.g. 2026" />
           </div>
           <div class="tb-field">
-            <label>Project Scale</label>
+            <div class="tb-label-row">
+              <label for="dScale">Project Scale</label>
+              <button type="button" class="tb-auto-chip" data-autogen-field="scale"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="dScale" class="tb-input" placeholder="e.g. 5 Katha • G+8 Residential" />
           </div>
           <div class="tb-field">
-            <label>Tools Used (comma-separated)</label>
+            <div class="tb-label-row">
+              <label for="dTools">Tools Used (comma-separated)</label>
+              <button type="button" class="tb-auto-chip" data-autogen-field="tools"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="dTools" class="tb-input" placeholder="SketchUp, Lumion, AutoCAD, Photoshop" />
           </div>
-          <div class="tb-field" style="grid-column:1 / -1;margin-bottom:0;">
-            <label>Keywords (comma-separated)</label>
+          <div class="tb-field" style="grid-column:1 / -1;">
+            <div class="tb-label-row">
+              <label for="dKeywords">Keywords (comma-separated)</label>
+              <button type="button" class="tb-auto-chip" data-autogen-field="keywords"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="dKeywords" class="tb-input" placeholder="Duplex, RAJUK, Twilight Render, Modern Facade" />
+          </div>
+          <div class="tb-field" style="grid-column:1 / -1;margin-bottom:0;">
+            <div class="tb-label-row">
+              <label for="dDescription">Project Description</label>
+              <button type="button" class="tb-auto-chip" data-autogen-field="description" id="autoGenDescBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
+            <textarea id="dDescription" class="tb-textarea" placeholder="Concise architectural description (auto-generated from source images, videos &amp; contents, or write manually)..."></textarea>
           </div>
         </div>
 
@@ -171,26 +205,32 @@
 
         <div class="tb-grid-3">
           <div class="tb-field">
-            <label>Model ID (for Inquiry)</label>
+            <div class="tb-label-row">
+              <label for="mModelId">Model ID (for Inquiry)</label>
+              <button type="button" class="tb-auto-chip" data-autogen-model="modelId"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="mModelId" class="tb-input" placeholder="MDL-03" />
           </div>
           <div class="tb-field">
-            <label>Scale Label (Top-Left)</label>
+            <div class="tb-label-row">
+              <label for="mScale">Scale Label (Top-Left)</label>
+              <button type="button" class="tb-auto-chip" data-autogen-model="scale"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
+            </div>
             <input id="mScale" class="tb-input" placeholder="Scaling 1:200" />
           </div>
           <div class="tb-field">
-            <label>Cover Image URL (Drive or Direct)</label>
+            <label for="mCover">Cover Image URL (Drive or Direct)</label>
             <input id="mCover" class="tb-input" placeholder="https://drive.google.com/file/d/..." />
           </div>
         </div>
 
         <div class="tb-grid-2">
           <div class="tb-field">
-            <label>Google Drive Folder Link (Auto-Load Photos/Videos)</label>
+            <label for="mDriveFolder">Google Drive Folder Link (Auto-Load Photos/Videos)</label>
             <input id="mDriveFolder" class="tb-input" placeholder="https://drive.google.com/drive/folders/..." />
           </div>
           <div class="tb-field">
-            <label>Or Paste Additional Image/Video URLs (1 per line)</label>
+            <label for="mExtraUrls">Or Paste Additional Image/Video URLs (1 per line)</label>
             <textarea id="mExtraUrls" class="tb-textarea" style="min-height:46px;" placeholder="https://..."></textarea>
           </div>
         </div>
@@ -224,11 +264,11 @@
 
         <div class="tb-grid-2">
           <div class="tb-field">
-            <label>Google Drive Folder Link (Studio Photos/Videos)</label>
+            <label for="sDriveFolder">Google Drive Folder Link (Studio Photos/Videos)</label>
             <input id="sDriveFolder" class="tb-input" placeholder="https://drive.google.com/drive/folders/..." />
           </div>
           <div class="tb-field">
-            <label>Or Paste Photo/Video URLs (1 per line)</label>
+            <label for="sExtraUrls">Or Paste Photo/Video URLs (1 per line)</label>
             <textarea id="sExtraUrls" class="tb-textarea" style="min-height:46px;" placeholder="https://..."></textarea>
           </div>
         </div>
@@ -256,47 +296,48 @@
 
         <div class="tb-grid-3">
           <div class="tb-field">
-            <label>GitHub Username / Owner</label>
+            <label for="cfgOwner">GitHub Username / Owner</label>
             <input id="cfgOwner" class="tb-input" placeholder="e.g. ataur-akash" />
           </div>
           <div class="tb-field">
-            <label>GitHub Repository Name</label>
+            <label for="cfgRepo">GitHub Repository Name</label>
             <input id="cfgRepo" class="tb-input" placeholder="e.g. portfolio" />
           </div>
           <div class="tb-field">
-            <label>Branch Name</label>
+            <label for="cfgBranch">Branch Name</label>
             <input id="cfgBranch" class="tb-input" value="main" />
           </div>
         </div>
 
         <div class="tb-field">
-          <label>GitHub Fine-Grained Personal Access Token (Contents: Read &amp; Write on this repo only)</label>
+          <label for="cfgToken">GitHub Fine-Grained Personal Access Token (Contents: Read &amp; Write on this repo only)</label>
           <input id="cfgToken" type="password" class="tb-input" placeholder="github_pat_..." />
         </div>
 
         <div class="tb-field">
-          <label>Free Google Apps Script Drive Scanner Web App URL (from workers/drive-folder-scanner.gs)</label>
+          <label for="cfgDriveScanner">Free Google Apps Script Drive Scanner Web App URL (from workers/drive-folder-scanner.gs)</label>
           <input id="cfgDriveScanner" class="tb-input" placeholder="https://script.google.com/macros/s/.../exec" />
         </div>
 
         <div class="tb-grid-2">
           <div class="tb-field">
-            <label>Free AI Mode</label>
+            <label for="cfgAiMode">Free AI Mode</label>
             <select id="cfgAiMode" class="tb-select">
               <option value="smart">Built-in Smart Classifier (100% Free, No Key Needed)</option>
-              <option value="gemini">Google Gemini Free Tier API (Best Accuracy)</option>
+              <option value="gemini">Google Gemini Free Tier API (Best Multimodal Accuracy)</option>
               <option value="ollama">Local AI on PC (Ollama — http://localhost:11434)</option>
             </select>
           </div>
           <div class="tb-field">
-            <label>Gemini API Key (Optional, Free from aistudio.google.com) OR Ollama Model Name</label>
+            <label for="cfgAiKey">Gemini API Key (from aistudio.google.com) OR Ollama Model Name</label>
             <input id="cfgAiKey" type="password" class="tb-input" placeholder="AIza... (for Gemini) or llama3.2 (for Ollama)" />
           </div>
         </div>
 
         <div class="tb-actions-row">
-          <button type="button" class="tb-btn tb-btn-primary" id="saveSettingsBtn"><i class="fa-solid fa-floppy-disk"></i> Save &amp; Test GitHub Connection</button>
-          <button type="button" class="tb-btn" id="exportSettingsBtn"><i class="fa-solid fa-mobile-screen"></i> Copy Sync Code for Mobile/PC</button>
+          <button type="button" class="tb-btn tb-btn-primary" id="saveSettingsBtn"><i class="fa-solid fa-floppy-disk"></i> Save &amp; Test GitHub</button>
+          <button type="button" class="tb-btn tb-btn-ai" id="testAiBtn"><i class="fa-solid fa-bolt"></i> Test AI Connection</button>
+          <button type="button" class="tb-btn" id="exportSettingsBtn"><i class="fa-solid fa-mobile-screen"></i> Copy Sync Code</button>
           <button type="button" class="tb-btn" id="importSettingsBtn"><i class="fa-solid fa-paste"></i> Import Sync Code</button>
           <button type="button" class="tb-btn tb-btn-danger" id="clearSettingsBtn">Wipe Local Keys</button>
         </div>

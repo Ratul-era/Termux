@@ -5,7 +5,7 @@
   "parts": {
     "3Dvis_ext": {
       "enabled": true,
-      "label": "Exterior • Project-2",
+      "label": "Exterior \u2022 Project-2",
       "tag": "Exterior",
       "title": "Contemporary G+8 Apartment Complex",
       "cover": {
@@ -14,67 +14,151 @@
         "thumbnail": "assets/card3.jpg"
       },
       "details": {
-        "keywords": ["Jalshiri Abashon", "G+8 Residential", "Brick Louvers", "Green Terraces"],
-        "tools": ["AutoCAD", "SketchUp", "Lumion", "Adobe Photoshop"],
+        "keywords": [
+          "Jalshiri Abashon",
+          "G+8 Residential",
+          "Brick Louvers",
+          "Green Terraces"
+        ],
+        "tools": [
+          "AutoCAD",
+          "SketchUp",
+          "Lumion",
+          "Adobe Photoshop"
+        ],
         "date": "2025",
         "projectId": "PRJ-002",
-        "scale": "5 Katha • G+8 Residential"
+        "scale": "5 Katha \u2022 G+8 Residential",
+        "description": "\u2022 Typology: G+8 contemporary urban apartment complex in Jalshiri Abashon\n\u2022 Facade Articulation: Perforated brick screen louvers and green terrace balconies\n\u2022 Rooftop Feature: Landscaped rooftop pavilion for community use\n\u2022 Presentation: Daylight street elevation & evening illumination study"
       },
       "additionals": [
-        { "type": "image", "url": "assets/card3.jpg", "title": "Main Street Elevation" },
-        { "type": "image", "url": "assets/card1.jpg", "title": "Rooftop Pavilion View" },
-        { "type": "image", "url": "assets/card2.jpg", "title": "Ground Floor Entry Lobby" },
-        { "type": "image", "url": "assets/card4.jpg", "title": "Balcony Planter Screen" },
-        { "type": "image", "url": "assets/card5.jpg", "title": "Evening Illumination Study" },
-        { "type": "image", "url": "assets/card6.jpg", "title": "Neighborhood Context View" }
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Main Street Elevation"
+        },
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Rooftop Pavilion View"
+        },
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Ground Floor Entry Lobby"
+        },
+        {
+          "type": "image",
+          "url": "assets/card4.jpg",
+          "title": "Balcony Planter Screen"
+        },
+        {
+          "type": "image",
+          "url": "assets/card5.jpg",
+          "title": "Evening Illumination Study"
+        },
+        {
+          "type": "image",
+          "url": "assets/card6.jpg",
+          "title": "Neighborhood Context View"
+        }
       ]
     },
     "3Dvis_int": {
       "enabled": true,
-      "label": "Interior • Project-2",
+      "label": "Interior \u2022 Project-2",
       "tag": "Interior",
-      "title": "Contemporary G+8 Apartment — Typical Unit",
+      "title": "Contemporary G+8 Apartment \u2014 Typical Unit",
       "cover": {
         "type": "image",
         "url": "assets/card5.jpg",
         "thumbnail": "assets/card5.jpg"
       },
       "details": {
-        "keywords": ["Apartment Interior", "Warm Neutral", "Acoustic Paneling"],
-        "tools": ["SketchUp", "Lumion", "Adobe Photoshop"],
+        "keywords": [
+          "Apartment Interior",
+          "Warm Neutral",
+          "Acoustic Paneling"
+        ],
+        "tools": [
+          "SketchUp",
+          "Lumion",
+          "Adobe Photoshop"
+        ],
         "date": "2025",
         "projectId": "PRJ-002",
-        "scale": "2,150 sq.ft • Typical Floor"
+        "scale": "2,150 sq.ft \u2022 Typical Floor",
+        "description": "\u2022 Typology: 2,150 sq.ft typical residential apartment unit\n\u2022 Palette: Warm neutral finishes with acoustic slatted wall paneling\n\u2022 Spaces Covered: Formal living, dining feature wall, kitchenette & master study"
       },
       "additionals": [
-        { "type": "image", "url": "assets/card5.jpg", "title": "Master Bedroom & Study" },
-        { "type": "image", "url": "assets/card4.jpg", "title": "Formal Living Area" },
-        { "type": "image", "url": "assets/card1.jpg", "title": "Kitchenette & Breakfast Bar" },
-        { "type": "image", "url": "assets/card2.jpg", "title": "Foyer Entrance" },
-        { "type": "image", "url": "assets/card3.jpg", "title": "Dining Feature Wall" },
-        { "type": "image", "url": "assets/card6.jpg", "title": "Guest Bedroom" }
+        {
+          "type": "image",
+          "url": "assets/card5.jpg",
+          "title": "Master Bedroom & Study"
+        },
+        {
+          "type": "image",
+          "url": "assets/card4.jpg",
+          "title": "Formal Living Area"
+        },
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Kitchenette & Breakfast Bar"
+        },
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Foyer Entrance"
+        },
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Dining Feature Wall"
+        },
+        {
+          "type": "image",
+          "url": "assets/card6.jpg",
+          "title": "Guest Bedroom"
+        }
       ]
     },
     "AW_ext": {
       "enabled": true,
-      "label": "Exterior • Project-2",
+      "label": "Exterior \u2022 Project-2",
       "tag": "Exterior",
-      "title": "Contemporary G+8 Apartment — Flythrough",
+      "title": "Contemporary G+8 Apartment \u2014 Flythrough",
       "cover": {
         "type": "image",
         "url": "assets/card2.jpg",
         "thumbnail": "assets/card2.jpg"
       },
       "details": {
-        "keywords": ["Jalshiri", "Exterior Walkthrough", "Urban Facade"],
-        "tools": ["Lumion", "Camtasia"],
+        "keywords": [
+          "Jalshiri",
+          "Exterior Walkthrough",
+          "Urban Facade"
+        ],
+        "tools": [
+          "Lumion",
+          "Camtasia"
+        ],
         "date": "2025",
         "projectId": "PRJ-002",
-        "scale": "5 Katha • G+8 Residential"
+        "scale": "5 Katha \u2022 G+8 Residential",
+        "description": "\u2022 Format: Exterior architectural flythrough walkthrough\n\u2022 Key Views: Street-level approach, facade louver depth & rooftop panorama"
       },
       "additionals": [
-        { "type": "image", "url": "assets/card2.jpg", "title": "Approach Camera Frame" },
-        { "type": "image", "url": "assets/card3.jpg", "title": "Rooftop Panorama Frame" }
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Approach Camera Frame"
+        },
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Rooftop Panorama Frame"
+        }
       ]
     },
     "AW_int": {

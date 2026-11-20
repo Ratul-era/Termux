@@ -9,13 +9,14 @@
  *    - Execute as: "Me"
  *    - Who has access: "Anyone"
  * 4. Authorize & Copy the Web App URL (ends with /exec)
- * 5. Paste that URL into your Portfolio Toolbox -> Settings -> Drive Scanner URL
+ * 5. Paste that URL into your Portfolio Toolbox -> Connect & AI Setup
  * ============================================================================
  */
 
 function doGet(e) {
   try {
     var folderParam = (e && e.parameter && e.parameter.folder) || "";
+    var includeSamples = (e && e.parameter && e.parameter.samples === "1");
     var folderId = extractFolderId_(folderParam);
     if (!folderId) {
       return jsonResponse_({ ok: false, error: "Invalid or missing Google Drive folder URL/ID." });
@@ -23,14 +24,16 @@ function doGet(e) {
 
     var rootFolder = DriveApp.getFolderById(folderId);
     var files = [];
-    collectFilesRecursive_(rootFolder, "", files, 0);
+    var sampleThumbs = [];
+    collectFilesRecursive_(rootFolder, "", files, sampleThumbs, includeSamples, 0);
 
     return jsonResponse_({
       ok: true,
       folderName: rootFolder.getName(),
       folderId: folderId,
       total: files.length,
-      files: files
+      files: files,
+      sampleThumbs: sampleThumbs
     });
   } catch (err) {
     return jsonResponse_({ ok: false, error: String(err) });
@@ -47,8 +50,8 @@ function extractFolderId_(input) {
   return "";
 }
 
-function collectFilesRecursive_(folder, pathPrefix, out, depth) {
-  if (depth > 3) return; // prevent infinite loops, supports up to 3 subfolder levels
+function collectFilesRecursive_(folder, pathPrefix, out, sampleThumbs, includeSamples, depth) {
+  if (depth > 3) return;
   var fileIter = folder.getFiles();
   while (fileIter.hasNext()) {
     var f = fileIter.next();
@@ -65,6 +68,22 @@ function collectFilesRecursive_(folder, pathPrefix, out, depth) {
       kind = "image";
       url = "https://lh3.googleusercontent.com/d/" + id + "=w1600";
       thumb = "https://lh3.googleusercontent.com/d/" + id + "=w800";
+
+      // Capture up to 4 small CORS-free base64 thumbnails for Multimodal AI visual analysis
+      if (includeSamples && sampleThumbs.length < 4) {
+        try {
+          var thumbRes = UrlFetchApp.fetch("https://lh3.googleusercontent.com/d/" + id + "=w512", { muteHttpExceptions: true });
+          if (thumbRes.getResponseCode() === 200) {
+            var blob = thumbRes.getBlob();
+            sampleThumbs.push({
+              name: name,
+              folderPath: pathPrefix,
+              mimeType: blob.getContentType() || "image/jpeg",
+              data: Utilities.base64Encode(blob.getBytes())
+            });
+          }
+        } catch (thumbErr) {}
+      }
     } else if (mime.indexOf("video/") === 0 || /^(mp4|webm|mov|m4v|mkv|avi)$/i.test(ext)) {
       kind = "drive_video";
       url = "https://drive.google.com/file/d/" + id + "/preview";
@@ -89,7 +108,7 @@ function collectFilesRecursive_(folder, pathPrefix, out, depth) {
   while (subIter.hasNext()) {
     var sub = subIter.next();
     var nextPrefix = pathPrefix ? (pathPrefix + "/" + sub.getName()) : sub.getName();
-    collectFilesRecursive_(sub, nextPrefix, out, depth + 1);
+    collectFilesRecursive_(sub, nextPrefix, out, sampleThumbs, includeSamples, depth + 1);
   }
 }
 

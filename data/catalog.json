@@ -1,32 +1,40 @@
 {
   "version": 2,
-  "updatedAt": "2026-11-20T10:55:36.381Z",
+  "updatedAt": "2026-11-20T00:00:00Z",
   "projects": [
     {
       "id": "project-1",
       "projectId": "PRJ-001",
-      "title": "Classical Duplex House Design ID-1144",
-      "date": "2026",
+      "title": "Hillside Duplex Residence",
+      "date": "2025",
       "parts": {
         "3Dvis_ext": {
-          "enabled": false
+          "enabled": true,
+          "label": "Exterior • Project-1",
+          "title": "Hillside Duplex Residence",
+          "cover": "assets/card1.jpg",
+          "count": 8
         },
         "3Dvis_int": {
-          "enabled": false
+          "enabled": true,
+          "label": "Interior • Project-1",
+          "title": "Hillside Duplex Residence",
+          "cover": "assets/card4.jpg",
+          "count": 7
         },
         "AW_ext": {
           "enabled": true,
           "label": "Exterior • Project-1",
-          "title": "Classical Duplex House Design ID-1144",
-          "cover": "https://i.ytimg.com/vi/JdVZc_tRmZA/hqdefault.jpg",
-          "count": 2
+          "title": "Hillside Duplex Residence",
+          "cover": "assets/card2.jpg",
+          "count": 3
         },
         "AW_int": {
           "enabled": true,
           "label": "Interior • Project-1",
-          "title": "Classical Duplex House Design ID-1144",
-          "cover": "https://i.ytimg.com/vi/JdVZc_tRmZA/hqdefault.jpg",
-          "count": 2
+          "title": "Hillside Duplex Residence",
+          "cover": "assets/card5.jpg",
+          "count": 3
         }
       }
     },
