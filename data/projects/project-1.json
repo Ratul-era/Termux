@@ -1,107 +1,134 @@
 {
   "id": "project-1",
   "projectId": "PRJ-001",
-  "title": "Hillside Duplex Residence",
+  "title": "Classical Duplex House Design ID-1144",
   "parts": {
     "3Dvis_ext": {
-      "enabled": true,
+      "enabled": false,
       "label": "Exterior • Project-1",
       "tag": "Exterior",
-      "title": "Hillside Duplex Residence",
+      "title": "Classical Duplex House Design ID-1144",
       "cover": {
         "type": "image",
-        "url": "assets/card1.jpg",
-        "thumbnail": "assets/card1.jpg"
+        "url": "",
+        "thumbnail": ""
       },
       "details": {
-        "keywords": ["Duplex", "RAJUK Residential", "Twilight Render", "Timber Soffit", "Landscape"],
-        "tools": ["SketchUp", "Lumion", "Adobe Photoshop", "AutoCAD"],
-        "date": "2025",
+        "description": "A luxurious classical duplex house featuring a grand portico with high columns and arched windows. The design incorporates a cream-ivory finish, a double-height stair void with a chandelier, and a landscaped front garden on a 3.87 katha plot.",
+        "keywords": [
+          "Classical Architecture",
+          "Duplex House",
+          "Residential Design",
+          "Portico",
+          "Double Height Void",
+          "Neoclassical",
+          "Bangladeshi Architecture"
+        ],
+        "tools": [],
+        "date": "2026",
         "projectId": "PRJ-001",
-        "scale": "4,200 sq.ft • G+1 Duplex"
+        "scale": "45' × 62' (2,790 sq.ft | 3.87 Katha)"
       },
-      "additionals": [
-        { "type": "image", "url": "assets/card1.jpg", "title": "Front Facade — Daylight View" },
-        { "type": "image", "url": "assets/card2.jpg", "title": "Entry Driveway & Garden Pergola" },
-        { "type": "image", "url": "assets/card3.jpg", "title": "Corner Perspective — Twilight" },
-        { "type": "image", "url": "assets/card4.jpg", "title": "Rear Patio & Pool Deck" },
-        { "type": "image", "url": "assets/card5.jpg", "title": "Terrace Balcony Detail" },
-        { "type": "image", "url": "assets/card6.jpg", "title": "Aerial Site Massing" },
-        { "type": "file3d", "url": "", "title": "Hillside_Duplex_Master.skp", "ext": "SKP" },
-        { "type": "file3d", "url": "", "title": "Hillside_Duplex_Scene.ls12", "ext": "LUMION" }
-      ]
+      "additionals": []
     },
     "3Dvis_int": {
-      "enabled": true,
+      "enabled": false,
       "label": "Interior • Project-1",
       "tag": "Interior",
-      "title": "Hillside Duplex Residence — Interior",
+      "title": "Classical Duplex House Design ID-1144",
       "cover": {
         "type": "image",
-        "url": "assets/card4.jpg",
-        "thumbnail": "assets/card4.jpg"
+        "url": "",
+        "thumbnail": ""
       },
       "details": {
-        "keywords": ["Minimalist Living", "Travertine", "Cove Lighting", "Walnut Joinery"],
-        "tools": ["SketchUp", "Lumion", "Adobe Photoshop"],
-        "date": "2025",
+        "description": "A luxurious classical duplex house featuring a grand portico with high columns and arched windows. The design incorporates a cream-ivory finish, a double-height stair void with a chandelier, and a landscaped front garden on a 3.87 katha plot.",
+        "keywords": [
+          "Classical Architecture",
+          "Duplex House",
+          "Residential Design",
+          "Portico",
+          "Double Height Void",
+          "Neoclassical",
+          "Bangladeshi Architecture"
+        ],
+        "tools": [],
+        "date": "2026",
         "projectId": "PRJ-001",
-        "scale": "4,200 sq.ft • Interior Package"
+        "scale": "45' × 62' (2,790 sq.ft | 3.87 Katha)"
       },
-      "additionals": [
-        { "type": "image", "url": "assets/card4.jpg", "title": "Double-Height Living Lounge" },
-        { "type": "image", "url": "assets/card5.jpg", "title": "Master Suite & Study Nook" },
-        { "type": "image", "url": "assets/card1.jpg", "title": "Dining & Open Kitchen View" },
-        { "type": "image", "url": "assets/card3.jpg", "title": "Staircase Atrium Lighting" },
-        { "type": "image", "url": "assets/card2.jpg", "title": "Family Lounge — Evening Mood" },
-        { "type": "image", "url": "assets/card6.jpg", "title": "Material Board & Finishes" },
-        { "type": "file3d", "url": "", "title": "Duplex_Interior_Package.skp", "ext": "SKP" }
-      ]
+      "additionals": []
     },
     "AW_ext": {
       "enabled": true,
       "label": "Exterior • Project-1",
       "tag": "Exterior",
-      "title": "Hillside Duplex Residence — Walkthrough",
+      "title": "Classical Duplex House Design ID-1144",
       "cover": {
-        "type": "image",
-        "url": "assets/card2.jpg",
-        "thumbnail": "assets/card2.jpg"
+        "type": "youtube",
+        "url": "https://youtu.be/JdVZc_tRmZA?si=1xk7Z2K8JDofTMi-",
+        "thumbnail": "https://i.ytimg.com/vi/JdVZc_tRmZA/hqdefault.jpg"
       },
       "details": {
-        "keywords": ["4K 60fps", "Exterior Flythrough", "Day-to-Night", "Cinematic"],
-        "tools": ["Lumion", "Camtasia", "SketchUp"],
-        "date": "2025",
+        "description": "A luxurious classical duplex house featuring a grand portico with high columns and arched windows. The design incorporates a cream-ivory finish, a double-height stair void with a chandelier, and a landscaped front garden on a 3.87 katha plot.",
+        "keywords": [
+          "Classical Architecture",
+          "Duplex House",
+          "Residential Design",
+          "Portico",
+          "Double Height Void",
+          "Neoclassical",
+          "Bangladeshi Architecture"
+        ],
+        "tools": [],
+        "date": "2026",
         "projectId": "PRJ-001",
-        "scale": "4,200 sq.ft • Full Exterior & Interior"
+        "scale": "45' × 62' (2,790 sq.ft | 3.87 Katha)"
       },
       "additionals": [
-        { "type": "image", "url": "assets/card2.jpg", "title": "Key Frame — Arrival Sequence" },
-        { "type": "image", "url": "assets/card1.jpg", "title": "Key Frame — Sunset Facade" },
-        { "type": "image", "url": "assets/card3.jpg", "title": "Key Frame — Garden Orbit" }
+        {
+          "type": "facebook",
+          "url": "https://www.facebook.com/reel/1846100453389962/?app=fbl",
+          "thumb": "",
+          "title": "Facebook Walkthrough Video",
+          "ext": ""
+        }
       ]
     },
     "AW_int": {
       "enabled": true,
       "label": "Interior • Project-1",
       "tag": "Interior",
-      "title": "Hillside Duplex Residence — Interior Walkthrough",
+      "title": "Classical Duplex House Design ID-1144",
       "cover": {
-        "type": "image",
-        "url": "assets/card5.jpg",
-        "thumbnail": "assets/card5.jpg"
+        "type": "youtube",
+        "url": "https://youtu.be/JdVZc_tRmZA?si=1xk7Z2K8JDofTMi-",
+        "thumbnail": "https://i.ytimg.com/vi/JdVZc_tRmZA/hqdefault.jpg"
       },
       "details": {
-        "keywords": ["Steadicam Tour", "Interior Walkthrough", "Natural Sunbeam"],
-        "tools": ["Lumion", "Camtasia", "SketchUp"],
-        "date": "2025",
+        "description": "A luxurious classical duplex house featuring a grand portico with high columns and arched windows. The design incorporates a cream-ivory finish, a double-height stair void with a chandelier, and a landscaped front garden on a 3.87 katha plot.",
+        "keywords": [
+          "Classical Architecture",
+          "Duplex House",
+          "Residential Design",
+          "Portico",
+          "Double Height Void",
+          "Neoclassical",
+          "Bangladeshi Architecture"
+        ],
+        "tools": [],
+        "date": "2026",
         "projectId": "PRJ-001",
-        "scale": "4,200 sq.ft • Interior Walkthrough"
+        "scale": "45' × 62' (2,790 sq.ft | 3.87 Katha)"
       },
       "additionals": [
-        { "type": "image", "url": "assets/card5.jpg", "title": "Key Frame — Living to Dining" },
-        { "type": "image", "url": "assets/card4.jpg", "title": "Key Frame — Master Suite" },
-        { "type": "image", "url": "assets/card1.jpg", "title": "Key Frame — Staircase Reveal" }
+        {
+          "type": "facebook",
+          "url": "https://www.facebook.com/reel/1846100453389962/?app=fbl",
+          "thumb": "",
+          "title": "Facebook Walkthrough Video",
+          "ext": ""
+        }
       ]
     }
   }
