@@ -191,6 +191,29 @@
     'studio': 'studio'
   };
 
+  // Dynamically load work-engine.js once across all root & subpage route shells
+  let workEnginePromise = null;
+  function ensureWorkEngineLoaded() {
+    if (window.WorkShowcaseEngine) {
+      window.WorkShowcaseEngine.init(SITE_BASE_URL.href);
+      return Promise.resolve(window.WorkShowcaseEngine);
+    }
+    if (workEnginePromise) return workEnginePromise;
+    workEnginePromise = new Promise(function (resolve) {
+      const s = document.createElement('script');
+      s.src = new URL('work-engine.js', SITE_BASE_URL).href;
+      s.onload = function () {
+        if (window.WorkShowcaseEngine) {
+          window.WorkShowcaseEngine.init(SITE_BASE_URL.href);
+        }
+        resolve(window.WorkShowcaseEngine || null);
+      };
+      s.onerror = function () { resolve(null); };
+      document.head.appendChild(s);
+    });
+    return workEnginePromise;
+  }
+
   // Global Theme Toggle Function (callable immediately from nav.html onclick)
   window.toggleSiteTheme = function (event) {
     if (event && event.preventDefault) event.preventDefault();
@@ -356,6 +379,7 @@
     initWorksWaveDock();
     initArchDropCue();
     initModals();
+    ensureWorkEngineLoaded();
     restoreRouteFromLocation();
     initScrollAnimations();
 
@@ -717,6 +741,13 @@
   function renderSubpageProjects(data, filterKey) {
     const grid = document.getElementById('subpage-projects-grid');
     if (!grid) return;
+    if (currentSubPageKey === '3Dvis' || currentSubPageKey === 'AW' || currentSubPageKey === 'model' || currentSubPageKey === 'studio') {
+      ensureWorkEngineLoaded().then(function (engine) {
+        if (engine) engine.renderSubpage(currentSubPageKey, filterKey, grid);
+      });
+      return;
+    }
+    grid.className = 'subpage-grid';
     grid.innerHTML = '';
     const filtered = filterKey === 'all'
       ? data.projects
@@ -1147,6 +1178,19 @@
 
   window.openContactModal = function (options) {
     const settings = options || {};
+    const inquiryRef = settings.inquiryRef ? String(settings.inquiryRef).trim() : '';
+    const encodedSubj = encodeURIComponent(inquiryRef ? ('Portfolio Inquiry: ' + inquiryRef) : 'Architectural Project Inquiry');
+    const encodedWa = encodeURIComponent(inquiryRef ? ('Hello Akash, I would like to inquire about: ' + inquiryRef) : '');
+    const mailHref = 'https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=archarakash09@gmail.com' + (inquiryRef ? '&amp;su=' + encodedSubj : '');
+    const waHref = 'https://wa.me/8801792985959' + (inquiryRef ? '?text=' + encodedWa : '');
+    const safeRef = inquiryRef.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const safeRefJs = inquiryRef.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const inquiryBannerHtml = inquiryRef
+      ? '<div class="cc-inquiry-banner">' +
+          '<div><strong>Inquiry Reference:</strong> ' + safeRef + '</div>' +
+          '<button type="button" onclick="copyTextToClipboard(\'' + safeRefJs + '\', this)" class="cc-btn cc-btn-neutral" style="flex-shrink:0;">Copy ID</button>' +
+        '</div>'
+      : '';
     if (settings.updateAddress !== false) {
       // Stay on the current page (Home, 3Dvisualization, AW, etc.) and append #contact
       setCurrentPageHash('contact', false);
@@ -1161,7 +1205,7 @@
         '</div>' +
       '</div>' +
 
-      '<div class="cc-rows">' +
+      inquiryBannerHtml + '<div class="cc-rows">' +
         '<div class="cc-row">' +
           '<div class="cc-row-left">' +
             '<div class="cc-icon cc-icon-purple">' +
@@ -1169,7 +1213,7 @@
             '</div>' +
             '<div class="cc-meta">' +
               '<div class="cc-label">EMAIL ADDRESS (ANCHORED)</div>' +
-              '<a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=archarakash09@gmail.com" target="_blank" rel="noopener noreferrer" class="cc-val cc-val-amber">archarakash09@gmail.com</a>' +
+              '<a href="' + mailHref + '" target="_blank" rel="noopener noreferrer" class="cc-val cc-val-amber">archarakash09@gmail.com</a>' +
             '</div>' +
           '</div>' +
           '<button type="button" onclick="copyTextToClipboard(\'archarakash09@gmail.com\', this)" class="cc-btn cc-btn-neutral">Copy</button>' +
@@ -1185,7 +1229,7 @@
               '<a href="https://wa.me/8801792985959" target="_blank" rel="noopener noreferrer" class="cc-val cc-val-green">+88-01792985959</a>' +
             '</div>' +
           '</div>' +
-          '<a href="https://wa.me/8801792985959" target="_blank" rel="noopener noreferrer" class="cc-btn cc-btn-green">Chat</a>' +
+          '<a href="' + waHref + '" target="_blank" rel="noopener noreferrer" class="cc-btn cc-btn-green">Chat</a>' +
         '</div>' +
 
         '<div class="cc-row">' +
