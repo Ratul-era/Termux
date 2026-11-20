@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "updatedAt": "2026-11-20T00:00:00Z",
+  "items": [
+    {
+      "id": "stu-01",
+      "type": "image",
+      "url": "assets/card5.jpg",
+      "thumb": "assets/card5.jpg",
+      "title": "B.Sc. Studio — Working Drawing & Design Sheet"
+    },
+    {
+      "id": "stu-02",
+      "type": "image",
+      "url": "assets/card1.jpg",
+      "thumb": "assets/card1.jpg",
+      "title": "Cultural Complex — Courtyard Climate Study"
+    },
+    {
+      "id": "stu-03",
+      "type": "image",
+      "url": "assets/card4.jpg",
+      "thumb": "assets/card4.jpg",
+      "title": "Interior Spatial Composition — Academic Studio"
+    },
+    {
+      "id": "stu-04",
+      "type": "image",
+      "url": "assets/card6.jpg",
+      "thumb": "assets/card6.jpg",
+      "title": "Physical Concept Study Model — Sonargaon University"
+    }
+  ]
+}

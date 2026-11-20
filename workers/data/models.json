@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "updatedAt": "2026-11-20T00:00:00Z",
+  "models": [
+    {
+      "id": "model-1",
+      "modelId": "MDL-01",
+      "scale": "Scaling 1:100",
+      "cover": "assets/card6.jpg",
+      "additionals": [
+        { "type": "image", "url": "assets/card6.jpg", "title": "Full Elevation View" },
+        { "type": "image", "url": "assets/card1.jpg", "title": "LED Interior Illumination" },
+        { "type": "image", "url": "assets/card2.jpg", "title": "Roof & Podium Craft Detail" },
+        { "type": "image", "url": "assets/card3.jpg", "title": "Corner Facade Close-up" },
+        { "type": "image", "url": "assets/card4.jpg", "title": "Site Landscaping Detail" },
+        { "type": "image", "url": "assets/card5.jpg", "title": "Base Plinth Assembly" }
+      ]
+    },
+    {
+      "id": "model-2",
+      "modelId": "MDL-02",
+      "scale": "Scaling 1:200",
+      "cover": "assets/card2.jpg",
+      "additionals": [
+        { "type": "image", "url": "assets/card2.jpg", "title": "Topographic Contour Overview" },
+        { "type": "image", "url": "assets/card6.jpg", "title": "Pavilion & Waterbody Cluster" },
+        { "type": "image", "url": "assets/card3.jpg", "title": "Layered Cork Terrain Profile" }
+      ]
+    }
+  ]
+}

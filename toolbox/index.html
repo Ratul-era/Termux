@@ -65,10 +65,7 @@
         <div id="projectIngestBox">
           <div class="tb-grid-3">
             <div class="tb-field">
-              <div class="tb-label-row">
-                <label for="pTitle">Project Title</label>
-                <button type="button" class="tb-auto-chip" data-autogen-field="title" title="Auto-generate Title from images, videos &amp; contents"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-              </div>
+              <label>Project Title</label>
               <input id="pTitle" class="tb-input" placeholder="e.g., Hillside Duplex Residence" />
             </div>
             <div class="tb-field">
@@ -135,45 +132,22 @@
         </div>
 
         <!-- Shared Quick Details (applies to enabled parts or override per-part below) -->
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-          <span style="font-size:0.82rem;font-weight:700;color:var(--tb-muted);">Analyze all source images, videos &amp; files to fill every box below:</span>
-          <button type="button" class="tb-btn tb-btn-ai tb-btn-sm" id="autoGenAllBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Generate All Details from Contents</button>
-        </div>
         <div class="tb-grid-3" style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--tb-border);">
           <div class="tb-field">
-            <div class="tb-label-row">
-              <label for="dDate">Date</label>
-              <button type="button" class="tb-auto-chip" data-autogen-field="date"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
+            <label>Date</label>
             <input id="dDate" class="tb-input" placeholder="e.g. 2026" />
           </div>
           <div class="tb-field">
-            <div class="tb-label-row">
-              <label for="dScale">Project Scale</label>
-              <button type="button" class="tb-auto-chip" data-autogen-field="scale"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
+            <label>Project Scale</label>
             <input id="dScale" class="tb-input" placeholder="e.g. 5 Katha • G+8 Residential" />
           </div>
           <div class="tb-field">
-            <div class="tb-label-row">
-              <label for="dTools">Tools Used (comma-separated)</label>
-              <button type="button" class="tb-auto-chip" data-autogen-field="tools"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
+            <label>Tools Used (comma-separated)</label>
             <input id="dTools" class="tb-input" placeholder="SketchUp, Lumion, AutoCAD, Photoshop" />
           </div>
-          <div class="tb-field" style="grid-column:1 / -1;">
-            <div class="tb-label-row">
-              <label for="dKeywords">Keywords (comma-separated)</label>
-              <button type="button" class="tb-auto-chip" data-autogen-field="keywords"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
-            <input id="dKeywords" class="tb-input" placeholder="Duplex, RAJUK, Twilight Render, Modern Facade" />
-          </div>
           <div class="tb-field" style="grid-column:1 / -1;margin-bottom:0;">
-            <div class="tb-label-row">
-              <label for="dDescription">Project Description</label>
-              <button type="button" class="tb-auto-chip" data-autogen-field="description" id="autoGenDescBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
-            <textarea id="dDescription" class="tb-textarea" placeholder="Concise architectural description (auto-generated from source images, videos &amp; contents, or write manually)..."></textarea>
+            <label>Keywords (comma-separated)</label>
+            <input id="dKeywords" class="tb-input" placeholder="Duplex, RAJUK, Twilight Render, Modern Facade" />
           </div>
         </div>
 
@@ -197,17 +171,11 @@
 
         <div class="tb-grid-3">
           <div class="tb-field">
-            <div class="tb-label-row">
-              <label for="mModelId">Model ID (for Inquiry)</label>
-              <button type="button" class="tb-auto-chip" data-autogen-model="modelId"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
+            <label>Model ID (for Inquiry)</label>
             <input id="mModelId" class="tb-input" placeholder="MDL-03" />
           </div>
           <div class="tb-field">
-            <div class="tb-label-row">
-              <label for="mScale">Scale Label (Top-Left)</label>
-              <button type="button" class="tb-auto-chip" data-autogen-model="scale"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto</button>
-            </div>
+            <label>Scale Label (Top-Left)</label>
             <input id="mScale" class="tb-input" placeholder="Scaling 1:200" />
           </div>
           <div class="tb-field">

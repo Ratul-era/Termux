@@ -451,33 +451,3 @@ body {
   .tb-grid-2, .tb-grid-3, .tb-parts-grid { grid-template-columns: 1fr; }
   .tb-topbar { padding: 12px 14px; }
 }
-
-.tb-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.tb-auto-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(124, 58, 237, 0.38);
-  background: rgba(124, 58, 237, 0.12);
-  color: var(--tb-purple);
-  font-family: inherit;
-  font-size: 0.7rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
-}
-
-.tb-auto-chip:hover {
-  background: linear-gradient(135deg, #6930ff, #a229f5);
-  color: #ffffff;
-  border-color: transparent;
-  transform: translateY(-1px);
-}
