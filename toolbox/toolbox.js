@@ -74,7 +74,7 @@
         tag: PART_META[k].tag,
         title: '',
         cover: { type: PART_META[k].isAW ? 'youtube' : 'image', url: '', thumbnail: '' },
-        details: { keywords: [], tools: [], date: '', projectId: '', scale: '' },
+        details: { description: '', keywords: [], tools: [], date: '', projectId: '', scale: '' },
         additionals: []
       };
     });
@@ -373,6 +373,325 @@
     return null;
   }
 
+
+  async function imageUrlToInlinePart(url) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      if (!blob.type || !blob.type.startsWith('image/')) return null;
+      return await new Promise(function (resolve) {
+        const reader = new FileReader();
+        reader.onloadend = function () {
+          const dataUrl = String(reader.result || '');
+          const b64 = dataUrl.split(',')[1];
+          resolve(b64 ? { inlineData: { mimeType: blob.type, data: b64 } } : null);
+        };
+        reader.onerror = function () { resolve(null); };
+        reader.readAsDataURL(blob);
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function buildSmartFallbackDescription(proj, extraNotes) {
+    const title = ($('pTitle').value.trim() || proj.title || 'This architectural project');
+    const scale = $('dScale').value.trim();
+    const tools = $('dTools').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    const kws = $('dKeywords').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    const enabledParts = PART_KEYS.filter(function (k) { return proj.parts[k] && proj.parts[k].enabled; });
+
+    const partNames = [];
+    if (enabledParts.indexOf('3Dvis_ext') >= 0) partNames.push('exterior 3D visualization');
+    if (enabledParts.indexOf('3Dvis_int') >= 0) partNames.push('interior 3D design');
+    if (enabledParts.indexOf('AW_ext') >= 0) partNames.push('exterior animation walkthrough');
+    if (enabledParts.indexOf('AW_int') >= 0) partNames.push('interior animation walkthrough');
+
+    let imgCount = 0, vidCount = 0;
+    enabledParts.forEach(function (k) {
+      const p = proj.parts[k];
+      if (p.cover && p.cover.url) {
+        if (PART_META[k].isAW) vidCount++; else imgCount++;
+      }
+      (p.additionals || []).forEach(function (a) {
+        if (a.type === 'video' || a.type === 'youtube' || a.type === 'facebook' || a.type === 'drive_video') vidCount++;
+        else if (a.type === 'image') imgCount++;
+      });
+    });
+
+    const scopeStr = partNames.length ? (' featuring ' + partNames.join(', ')) : '';
+    const scaleStr = scale ? (' (' + scale + ')') : '';
+    const s1 = title + scaleStr + ' is an architectural showcase' + scopeStr + '.';
+    const mediaBits = [];
+    if (imgCount) mediaBits.push(imgCount + ' visual render' + (imgCount > 1 ? 's' : ''));
+    if (vidCount) mediaBits.push(vidCount + ' walkthrough video' + (vidCount > 1 ? 's' : ''));
+    const toolStr = tools.length ? (' produced with ' + tools.join(', ')) : '';
+    const kwStr = kws.length ? (' highlighting ' + kws.slice(0, 4).join(', ').toLowerCase()) : '';
+    const s2 = (mediaBits.length || toolStr || kwStr)
+      ? ('The presentation includes ' + (mediaBits.length ? mediaBits.join(' and ') : 'curated architectural media') + toolStr + kwStr + '.')
+      : '';
+    return [s1, s2].filter(Boolean).join(' ');
+  }
+
+
+  function collectAllProjectSourceItems() {
+    const items = [];
+    PART_KEYS.forEach(function (k) {
+      const p = currentProject.parts[k];
+      if (!p) return;
+      if (p.cover && p.cover.url) {
+        items.push({
+          part: k,
+          type: p.cover.type || (PART_META[k].isAW ? 'video' : 'image'),
+          url: p.cover.url,
+          thumb: p.cover.thumbnail || (p.cover.type === 'image' ? p.cover.url : ''),
+          name: p.title || p.label || ''
+        });
+      }
+      (p.additionals || []).forEach(function (a) {
+        items.push({
+          part: k,
+          type: a.type || 'image',
+          url: a.url || '',
+          thumb: a.thumb || (a.type === 'image' ? a.url : ''),
+          name: a.title || a.url || '',
+          ext: a.ext || ''
+        });
+      });
+    });
+    // Also include any pasted links not yet sorted
+    ['pYoutubeLinks', 'pFbLinks', 'pExtraText'].forEach(function (id) {
+      const el = $(id);
+      if (!el || !el.value) return;
+      el.value.split('\n').forEach(function (line) {
+        const n = normalizeSingleUrlItem(line);
+        if (n) items.push(n);
+      });
+    });
+    return items;
+  }
+
+  async function autoGenerateFormDetails(targetField, silent) {
+    const modeLabel = targetField === 'all' ? 'all project details' : targetField;
+    if (!silent) showLog('aiSortLog', 'Analyzing source images, videos & contents to auto-generate ' + modeLabel + '...', '');
+
+    const items = collectAllProjectSourceItems();
+    const extraText = [
+      $('pTitle').value.trim(),
+      $('pLabelSlug').value.trim(),
+      $('pDriveFolder').value.trim(),
+      $('pExtraText').value.trim()
+    ].filter(Boolean).join('\n');
+
+    // Enrich with YouTube titles if any YouTube links are present
+    const ytTitles = [];
+    for (let i = 0; i < items.length && ytTitles.length < 4; i++) {
+      if (items[i].type === 'youtube' && items[i].url) {
+        const t = await fetchYouTubeTitle(items[i].url);
+        if (t) ytTitles.push(t);
+      }
+    }
+    const fullContext = [extraText, ytTitles.join('\n')].filter(Boolean).join('\n');
+
+    // Compute smart heuristic baseline first
+    const smart = smartHeuristicClassify(items, fullContext);
+    let generated = {
+      title: $('pTitle').value.trim() || ytTitles[0] || currentProject.title || '',
+      date: smart.details.date || '',
+      scale: smart.details.scale || '',
+      tools: smart.details.tools || [],
+      keywords: smart.details.keywords || [],
+      description: buildSmartFallbackDescription(currentProject, fullContext)
+    };
+
+    // Upgrade via Multimodal Gemini Free Tier or Local Ollama when configured
+    const imgUrls = [];
+    items.forEach(function (it) {
+      const src = it.thumb || (it.type === 'image' ? it.url : '');
+      if (src && /^https?:|^assets\//i.test(src) && imgUrls.length < 4 && imgUrls.indexOf(src) === -1) {
+        imgUrls.push(src);
+      }
+    });
+
+    const promptText = [
+      'You are an expert architectural portfolio assistant. Analyze the attached source images/thumbnails, videos, filenames, and notes.',
+      'Return STRICT JSON ONLY with keys: {"title":"","date":"","scale":"","tools":[],"keywords":[],"description":""}',
+      'Rules:',
+      '- Leave date or scale as "" if not explicitly found in the images/videos/notes (do not invent numbers).',
+      '- Infer architectural keywords and a crisp 2-3 sentence description from the visual content of the images/videos and filenames.',
+      '- Infer software tools from file extensions (.skp, .ls12, .blend, .dwg) or notes.',
+      'NOTES & CONTEXT:\n' + fullContext.slice(0, 2000),
+      'ALL SOURCE CONTENTS (' + items.length + ' items):\n' + items.slice(0, 40).map(function (it) {
+        return '[' + (it.part || 'src') + ':' + it.type + '] ' + (it.name || it.url);
+      }).join('\n')
+    ].join('\n\n');
+
+    try {
+      if (config.aiMode === 'gemini' && config.aiKey) {
+        const parts = [{ text: promptText }];
+        for (let i = 0; i < imgUrls.length; i++) {
+          const inlinePart = await imageUrlToInlinePart(imgUrls[i]);
+          if (inlinePart) parts.push(inlinePart);
+        }
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(config.aiKey.trim()), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: parts }],
+            generationConfig: { responseMimeType: 'application/json' }
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const txt = data.candidates && data.candidates[0] && data.candidates[0].content.parts[0].text;
+          const parsed = JSON.parse(txt);
+          generated = {
+            title: parsed.title || generated.title,
+            date: parsed.date || generated.date,
+            scale: parsed.scale || generated.scale,
+            tools: (Array.isArray(parsed.tools) && parsed.tools.length) ? parsed.tools : generated.tools,
+            keywords: (Array.isArray(parsed.keywords) && parsed.keywords.length) ? parsed.keywords : generated.keywords,
+            description: parsed.description || generated.description
+          };
+        }
+      } else if (config.aiMode === 'ollama') {
+        const model = (config.aiKey || 'llama3.2').trim();
+        const res = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: model, prompt: promptText, format: 'json', stream: false })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const parsed = JSON.parse(data.response);
+          generated = {
+            title: parsed.title || generated.title,
+            date: parsed.date || generated.date,
+            scale: parsed.scale || generated.scale,
+            tools: (Array.isArray(parsed.tools) && parsed.tools.length) ? parsed.tools : generated.tools,
+            keywords: (Array.isArray(parsed.keywords) && parsed.keywords.length) ? parsed.keywords : generated.keywords,
+            description: parsed.description || generated.description
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('Unified AI generator fallback:', err);
+    }
+
+    // Apply to requested field or ALL fields
+    const applyAll = targetField === 'all';
+    if ((applyAll || targetField === 'title') && generated.title) $('pTitle').value = generated.title;
+    if ((applyAll || targetField === 'date') && generated.date) $('dDate').value = generated.date;
+    if ((applyAll || targetField === 'scale') && generated.scale) $('dScale').value = generated.scale;
+    if ((applyAll || targetField === 'tools') && generated.tools.length) $('dTools').value = generated.tools.join(', ');
+    if ((applyAll || targetField === 'keywords') && generated.keywords.length) $('dKeywords').value = generated.keywords.join(', ');
+    if ((applyAll || targetField === 'description') && generated.description) $('dDescription').value = generated.description;
+
+    if (!silent) {
+      showLog('aiSortLog', 'Auto-generated ' + modeLabel + ' from ' + items.length + ' source items. You can edit any box before pushing live.', 'ok');
+    }
+  }
+
+  function autoGenerateModelField(field) {
+    const raw = ($('mDriveFolder').value + ' ' + $('mExtraUrls').value + ' ' + $('mCover').value);
+    if (field === 'modelId') {
+      $('mModelId').value = 'MDL-' + String((liveModels.models ? liveModels.models.length : 0) + 1).padStart(2, '0');
+      showLog('modelLog', 'Auto-generated next Model ID.', 'ok');
+    } else if (field === 'scale') {
+      const m = raw.match(/1\s*:\s*\d{2,4}/);
+      if (m) {
+        $('mScale').value = 'Scaling ' + m[0].replace(/\s/g, '');
+        showLog('modelLog', 'Detected scale "' + $('mScale').value + '" from source links.', 'ok');
+      } else {
+        showLog('modelLog', 'No scale ratio (e.g. 1:200) found in links yet — scan a Drive folder or type it manually.', '');
+      }
+    }
+  }
+
+  async function autoGenerateProjectDescription(silent) {
+    if (!silent) showLog('aiSortLog', 'Generating project description from source images & videos...', '');
+    const proj = currentProject;
+    const title = $('pTitle').value.trim() || proj.title || '';
+    const extraText = $('pExtraText').value.trim();
+
+    // Collect media summary & up to 4 image URLs for multimodal inspection
+    const imgUrls = [];
+    const mediaSummary = [];
+    PART_KEYS.forEach(function (k) {
+      const p = proj.parts[k];
+      if (!p || !p.enabled) return;
+      if (p.cover && p.cover.url) {
+        mediaSummary.push('[' + k + ' cover: ' + p.cover.type + '] ' + (p.title || p.cover.url));
+        if (p.cover.type === 'image' && imgUrls.length < 4) imgUrls.push(p.cover.url);
+        else if (p.cover.thumbnail && imgUrls.length < 4) imgUrls.push(p.cover.thumbnail);
+      }
+      (p.additionals || []).slice(0, 12).forEach(function (a) {
+        mediaSummary.push('[' + k + ': ' + a.type + '] ' + (a.title || a.url));
+        if (a.type === 'image' && imgUrls.length < 4) imgUrls.push(a.url);
+      });
+    });
+
+    const promptText = [
+      'Write a concise, natural 2-to-3 sentence architectural portfolio description for this project.',
+      'Base it strictly on the attached source images/thumbnails, video titles, filenames, and notes below. Do not invent locations, client names, or measurements not present.',
+      'Project Title: ' + title,
+      'Scale: ' + ($('dScale').value.trim() || 'Not specified'),
+      'Tools: ' + ($('dTools').value.trim() || 'Not specified'),
+      'Keywords: ' + ($('dKeywords').value.trim() || 'Not specified'),
+      'Notes: ' + extraText.slice(0, 1200),
+      'Source Media:
+' + mediaSummary.slice(0, 30).join('
+'),
+      'Return ONLY the plain-text description paragraph with no markdown, bullets, or quotes.'
+    ].join('
+');
+
+    try {
+      if (config.aiMode === 'gemini' && config.aiKey) {
+        const parts = [{ text: promptText }];
+        for (let i = 0; i < imgUrls.length; i++) {
+          const inlinePart = await imageUrlToInlinePart(imgUrls[i]);
+          if (inlinePart) parts.push(inlinePart);
+        }
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(config.aiKey.trim()), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: parts }] })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const out = data.candidates && data.candidates[0] && data.candidates[0].content.parts[0].text;
+          if (out && out.trim()) {
+            $('dDescription').value = out.trim();
+            if (!silent) showLog('aiSortLog', 'Auto-generated description from your source images & videos via Gemini.', 'ok');
+            return;
+          }
+        }
+      } else if (config.aiMode === 'ollama') {
+        const model = (config.aiKey || 'llama3.2').trim();
+        const res = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: model, prompt: promptText, stream: false })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.response && data.response.trim()) {
+            $('dDescription').value = data.response.trim();
+            if (!silent) showLog('aiSortLog', 'Auto-generated description via Local Ollama AI.', 'ok');
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('AI description fallback:', e);
+    }
+
+    $('dDescription').value = buildSmartFallbackDescription(proj, extraText);
+    if (!silent) showLog('aiSortLog', 'Auto-generated description from your source images, videos & project details.', 'ok');
+  }
+
   /* ------------------------------------------------------------------------
      Project Workflow: Scan, Sort, Q&A, Manual/AI Edit, Push Live
      ------------------------------------------------------------------------ */
@@ -503,6 +822,7 @@
       if (!$('dScale').value && result.details.scale) $('dScale').value = result.details.scale;
       if (!$('dTools').value && result.details.tools.length) $('dTools').value = result.details.tools.join(', ');
       if (!$('dKeywords').value && result.details.keywords.length) $('dKeywords').value = result.details.keywords.join(', ');
+      if (!$('dDescription').value.trim()) await autoGenerateProjectDescription(true);
 
       // Build Missing-Field & Ambiguous-File Q&A
       pendingQuestions = [];
@@ -689,6 +1009,7 @@
     const scaleVal = $('dScale').value.trim();
     const toolsArr = $('dTools').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
     const kwArr = $('dKeywords').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    const descVal = $('dDescription').value.trim();
 
     currentProject.id = id;
     currentProject.projectId = projectId;
@@ -698,6 +1019,7 @@
       const part = currentProject.parts[k];
       part.title = part.title || title;
       part.details = {
+        description: descVal,
         keywords: kwArr,
         tools: toolsArr,
         date: dateVal,
@@ -814,6 +1136,7 @@
           $('dScale').value = d.scale || '';
           $('dTools').value = (d.tools || []).join(', ');
           $('dKeywords').value = (d.keywords || []).join(', ');
+          $('dDescription').value = d.description || '';
           renderFourPartsEditor();
           showLog('pushProjectLog', 'Loaded "' + currentProject.title + '" for editing.', 'ok');
           $('fourPartsCard').scrollIntoView({ behavior: 'smooth' });
@@ -1075,10 +1398,24 @@
 
     // Buttons
     $('runAiSortBtn').addEventListener('click', runAiScanAndSort);
+    const allBtn = $('autoGenAllBtn');
+    if (allBtn) {
+      allBtn.addEventListener('click', function () { autoGenerateFormDetails('all', false); });
+    }
+    document.querySelectorAll('[data-autogen-field]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        autoGenerateFormDetails(btn.getAttribute('data-autogen-field'), false);
+      });
+    });
+    document.querySelectorAll('[data-autogen-model]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        autoGenerateModelField(btn.getAttribute('data-autogen-model'));
+      });
+    });
     $('applyQaBtn').addEventListener('click', applyQaAnswers);
     $('clearProjectFormBtn').addEventListener('click', function () {
       currentProject = createEmptyProject();
-      ['pTitle', 'pLabelSlug', 'pProjectId', 'pDriveFolder', 'pYoutubeLinks', 'pFbLinks', 'pExtraText', 'dDate', 'dScale', 'dTools', 'dKeywords'].forEach(function (id) { $(id).value = ''; });
+      ['pTitle', 'pLabelSlug', 'pProjectId', 'pDriveFolder', 'pYoutubeLinks', 'pFbLinks', 'pExtraText', 'dDate', 'dScale', 'dTools', 'dKeywords', 'dDescription'].forEach(function (id) { $(id).value = ''; });
       $('aiQaBox').style.display = 'none';
       renderFourPartsEditor();
     });

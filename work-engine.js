@@ -147,7 +147,6 @@
     return '<div class="media-protect" style="width:100%;height:100%;">' +
       '<img src="' + escapeHtml(getImageSrc(item.thumbnail || item.thumb || url, 1600)) + '" alt="' + escapeHtml(item.title || '') + '" draggable="false" />' +
       '<div class="media-shield"></div>' +
-      '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>' +
     '</div>';
   }
 
@@ -293,11 +292,25 @@
     const type = detectMediaType(item);
     if (type === 'video' || type === 'youtube' || type === 'facebook' || type === 'drive_video') {
       mediaEl.innerHTML = buildVideoEmbedHtml(item, { autoplay: true });
+    } else if (type === 'file3d') {
+      const driveId = extractDriveId(item.url || '');
+      const ext = item.ext || ((item.title || item.url || '').split('.').pop() || '3D').toUpperCase();
+      if (driveId) {
+        mediaEl.innerHTML =
+          '<iframe src="https://drive.google.com/file/d/' + driveId + '/preview" allow="autoplay" allowfullscreen title="' + escapeHtml(item.title || '3D Render File') + '"></iframe>';
+      } else {
+        mediaEl.innerHTML =
+          '<div class="ws-lb-file3d-wide">' +
+            '<span class="wsm-file3d-ext" style="font-size:0.9rem;padding:6px 14px;">' + escapeHtml(ext) + '</span>' +
+            '<i class="fa-solid fa-cubes" style="font-size:3.6rem;color:#ff8a3d;"></i>' +
+            '<h3 style="font-size:1.35rem;font-weight:800;color:#fff;">' + escapeHtml(item.title || '3D Render / Model File') + '</h3>' +
+            '<p style="max-width:480px;font-size:0.9rem;color:#cbd5e1;line-height:1.55;">Protected 3D source asset (' + escapeHtml(ext) + '). Connect a Google Drive preview link via the Toolbox to inspect interactively, or use the Inquiry button to request project deliverables.</p>' +
+          '</div>';
+      }
     } else {
       mediaEl.innerHTML =
-        '<img src="' + escapeHtml(getImageSrc(item.url, 1800)) + '" alt="' + escapeHtml(item.title || '') + '" draggable="false" />' +
-        '<div class="media-shield"></div>' +
-        '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>';
+        '<img src="' + escapeHtml(getImageSrc(item.url, 2200)) + '" alt="' + escapeHtml(item.title || '') + '" draggable="false" />' +
+        '<div class="media-shield"></div>';
     }
     if (capEl) {
       const idxText = currentLightboxList.length > 1 ? ' (' + (currentLightboxIdx + 1) + ' / ' + currentLightboxList.length + ')' : '';
@@ -403,7 +416,6 @@
         card.innerHTML =
           '<img class="ws-card-img" src="' + escapeHtml(getImageSrc(mdl.cover, 850)) + '" alt="' + escapeHtml(labelText) + '" loading="lazy" decoding="async" draggable="false" />' +
           '<div class="media-shield"></div>' +
-          '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>' +
           '<span class="ws-model-label">' + escapeHtml(labelText) + '</span>';
 
         const openHandler = function () {
@@ -463,8 +475,7 @@
           } else {
             card.innerHTML =
               '<img src="' + escapeHtml(getImageSrc(item.url, 850)) + '" alt="' + escapeHtml(item.title || 'Studio Work') + '" loading="lazy" decoding="async" draggable="false" />' +
-              '<div class="media-shield"></div>' +
-              '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>';
+              '<div class="media-shield"></div>';
           }
 
           card.addEventListener('click', function () {
@@ -537,14 +548,14 @@
     // Build cover media HTML
     let coverHtml = '';
     if (isAW) {
-      coverHtml = '<div class="wsm-cover-video-box">' + buildVideoEmbedHtml(part.cover || {}, { autoplay: true }) + '</div>';
+      coverHtml = '<div class="wsm-cover-video-box">' + buildVideoEmbedHtml(part.cover || {}, { autoplay: true }) +
+        '<button type="button" class="ws-expand-btn" id="wsmCoverVideoExpand" title="Open video widely" aria-label="Open video widely"><i class="fa-solid fa-expand"></i> Wide View</button></div>';
     } else {
       const coverUrl = (part.cover && part.cover.url) || 'assets/card1.jpg';
       coverHtml =
         '<div class="media-protect" id="wsmCoverClick" style="cursor:pointer;">' +
           '<img src="' + escapeHtml(getImageSrc(coverUrl, 1600)) + '" alt="' + escapeHtml(titleText) + '" draggable="false" />' +
           '<div class="media-shield"></div>' +
-          '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>' +
         '</div>';
     }
 
@@ -610,6 +621,7 @@
           '<div>' +
             '<h3 class="wsm-details-heading">' + escapeHtml((project.id || 'Project').replace(/^p/, 'P')) + ' Details</h3>' +
             '<div class="wsm-detail-list">' +
+              (details.description ? '<div class="wsm-detail-row"><div class="wsm-detail-label">Description</div><div class="wsm-detail-val" style="font-weight:500;opacity:0.9;">' + escapeHtml(details.description) + '</div></div>' : '') +
               '<div class="wsm-detail-row"><div class="wsm-detail-label">Project ID</div><div class="wsm-detail-val">' + escapeHtml(projectCode || '—') + '</div></div>' +
               '<div class="wsm-detail-row"><div class="wsm-detail-label">Date</div><div class="wsm-detail-val">' + escapeHtml(details.date || '—') + '</div></div>' +
               '<div class="wsm-detail-row"><div class="wsm-detail-label">Project Scale</div><div class="wsm-detail-val">' + escapeHtml(details.scale || '—') + '</div></div>' +
@@ -635,7 +647,16 @@
     const coverClick = document.getElementById('wsmCoverClick');
     if (coverClick && part.cover && part.cover.url) {
       coverClick.addEventListener('click', function () {
-        openLightbox([{ type: 'image', url: part.cover.url, title: titleText + ' (Cover)' }], 0);
+        const coverItem = { type: 'image', url: part.cover.url, title: titleText + ' (Cover)' };
+        openLightbox([coverItem].concat(additionals), 0);
+      });
+    }
+    const coverVidExpand = document.getElementById('wsmCoverVideoExpand');
+    if (coverVidExpand && part.cover) {
+      coverVidExpand.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const coverVid = Object.assign({}, part.cover, { title: titleText + ' (Cover Video)' });
+        openLightbox([coverVid].concat(additionals), 0);
       });
     }
 
@@ -698,7 +719,6 @@
           '<div class="media-protect" id="wsmModelCoverClick" style="cursor:pointer;">' +
             '<img src="' + escapeHtml(getImageSrc(mdl.cover, 1600)) + '" alt="' + escapeHtml(labelText) + '" draggable="false" />' +
             '<div class="media-shield"></div>' +
-            '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>' +
           '</div>' +
         '</div>' +
 
@@ -744,13 +764,13 @@
     }
 
     let rendered = 0;
-    const viewableItems = items.filter(function (it) { return detectMediaType(it) !== 'file3d'; });
 
     function loadNextBatch() {
       const slice = items.slice(rendered, rendered + BATCH_SIZE);
       if (!slice.length) return;
 
-      slice.forEach(function (item) {
+      slice.forEach(function (item, localIdx) {
+        const itemIdx = rendered + localIdx;
         const type = detectMediaType(item);
         const card = document.createElement('div');
         card.className = 'wsm-add-item media-protect';
@@ -762,23 +782,24 @@
               '<span class="wsm-file3d-ext">' + escapeHtml(ext) + '</span>' +
               '<i class="fa-solid fa-cubes" style="font-size:1.8rem;opacity:0.75;"></i>' +
               '<div class="wsm-file3d-name">' + escapeHtml(item.title || '3D Source File') + '</div>' +
-              '<span style="font-size:0.72rem;opacity:0.65;">Protected 3D / CAD Asset</span>' +
+              '<span style="font-size:0.72rem;opacity:0.65;">Click to Open Wide Preview</span>' +
             '</div>';
         } else if (type === 'video' || type === 'youtube' || type === 'facebook' || type === 'drive_video') {
           card.innerHTML =
             buildVideoEmbedHtml(item, { autoplay: true }) +
+            '<div class="media-shield" style="cursor:pointer;" title="Click to open video widely"></div>' +
+            '<span class="ws-expand-pill" aria-hidden="true"><i class="fa-solid fa-expand"></i></span>' +
             (item.title ? '<div class="wsm-add-caption">' + escapeHtml(item.title) + '</div>' : '');
         } else {
           card.innerHTML =
             '<img src="' + escapeHtml(getImageSrc(item.url, 900)) + '" alt="' + escapeHtml(item.title || '') + '" loading="lazy" decoding="async" draggable="false" />' +
             '<div class="media-shield"></div>' +
-            '<div class="media-watermark"><span>© Ataur Rahman Akash</span></div>' +
             (item.title ? '<div class="wsm-add-caption">' + escapeHtml(item.title) + '</div>' : '');
-          card.addEventListener('click', function () {
-            const vIdx = viewableItems.indexOf(item);
-            openLightbox(viewableItems, vIdx >= 0 ? vIdx : 0);
-          });
         }
+
+        card.addEventListener('click', function () {
+          openLightbox(items, itemIdx);
+        });
 
         gridEl.appendChild(card);
       });
