@@ -1,0 +1,236 @@
+{
+  "id": "project-1",
+  "projectId": "PRJ-001",
+  "title": "Hillside Duplex Residence",
+  "parts": {
+    "3Dvis_ext": {
+      "enabled": true,
+      "label": "Exterior \u2022 Project-1",
+      "tag": "Exterior",
+      "title": "Hillside Duplex Residence",
+      "cover": {
+        "type": "image",
+        "url": "assets/card1.jpg",
+        "thumbnail": "assets/card1.jpg"
+      },
+      "details": {
+        "keywords": [
+          "Duplex",
+          "RAJUK Residential",
+          "Twilight Render",
+          "Timber Soffit",
+          "Landscape"
+        ],
+        "tools": [
+          "SketchUp",
+          "Lumion",
+          "Adobe Photoshop",
+          "AutoCAD"
+        ],
+        "date": "2025",
+        "projectId": "PRJ-001",
+        "scale": "4,200 sq.ft \u2022 G+1 Duplex",
+        "description": "\u2022 Typology: Two-storey luxury RAJUK residential duplex\n\u2022 Facade Palette: Warm timber soffits paired with floor-to-ceiling glazing\n\u2022 Lighting: Balanced daylight and twilight landscape illumination\n\u2022 Exterior Scope: Entry driveway, garden pergola, rear patio & pool deck"
+      },
+      "additionals": [
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Front Facade \u2014 Daylight View"
+        },
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Entry Driveway & Garden Pergola"
+        },
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Corner Perspective \u2014 Twilight"
+        },
+        {
+          "type": "image",
+          "url": "assets/card4.jpg",
+          "title": "Rear Patio & Pool Deck"
+        },
+        {
+          "type": "image",
+          "url": "assets/card5.jpg",
+          "title": "Terrace Balcony Detail"
+        },
+        {
+          "type": "image",
+          "url": "assets/card6.jpg",
+          "title": "Aerial Site Massing"
+        },
+        {
+          "type": "file3d",
+          "url": "",
+          "title": "Hillside_Duplex_Master.skp",
+          "ext": "SKP"
+        },
+        {
+          "type": "file3d",
+          "url": "",
+          "title": "Hillside_Duplex_Scene.ls12",
+          "ext": "LUMION"
+        }
+      ]
+    },
+    "3Dvis_int": {
+      "enabled": true,
+      "label": "Interior \u2022 Project-1",
+      "tag": "Interior",
+      "title": "Hillside Duplex Residence \u2014 Interior",
+      "cover": {
+        "type": "image",
+        "url": "assets/card4.jpg",
+        "thumbnail": "assets/card4.jpg"
+      },
+      "details": {
+        "keywords": [
+          "Minimalist Living",
+          "Travertine",
+          "Cove Lighting",
+          "Walnut Joinery"
+        ],
+        "tools": [
+          "SketchUp",
+          "Lumion",
+          "Adobe Photoshop"
+        ],
+        "date": "2025",
+        "projectId": "PRJ-001",
+        "scale": "4,200 sq.ft \u2022 Interior Package",
+        "description": "\u2022 Interior Style: Minimalist contemporary residential living\n\u2022 Key Materials: Travertine feature walls and custom walnut joinery\n\u2022 Lighting Design: Recessed cove lighting across double-height spaces\n\u2022 Spaces Covered: Living lounge, dining, open kitchen & master suite"
+      },
+      "additionals": [
+        {
+          "type": "image",
+          "url": "assets/card4.jpg",
+          "title": "Double-Height Living Lounge"
+        },
+        {
+          "type": "image",
+          "url": "assets/card5.jpg",
+          "title": "Master Suite & Study Nook"
+        },
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Dining & Open Kitchen View"
+        },
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Staircase Atrium Lighting"
+        },
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Family Lounge \u2014 Evening Mood"
+        },
+        {
+          "type": "image",
+          "url": "assets/card6.jpg",
+          "title": "Material Board & Finishes"
+        },
+        {
+          "type": "file3d",
+          "url": "",
+          "title": "Duplex_Interior_Package.skp",
+          "ext": "SKP"
+        }
+      ]
+    },
+    "AW_ext": {
+      "enabled": true,
+      "label": "Exterior \u2022 Project-1",
+      "tag": "Exterior",
+      "title": "Hillside Duplex Residence \u2014 Walkthrough",
+      "cover": {
+        "type": "image",
+        "url": "assets/card2.jpg",
+        "thumbnail": "assets/card2.jpg"
+      },
+      "details": {
+        "keywords": [
+          "4K 60fps",
+          "Exterior Flythrough",
+          "Day-to-Night",
+          "Cinematic"
+        ],
+        "tools": [
+          "Lumion",
+          "Camtasia",
+          "SketchUp"
+        ],
+        "date": "2025",
+        "projectId": "PRJ-001",
+        "scale": "4,200 sq.ft \u2022 Full Exterior & Interior",
+        "description": "\u2022 Format: 4K 60fps cinematic exterior architectural walkthrough\n\u2022 Sequence: Driveway arrival, infinity pool orbit & garden pergola\n\u2022 Atmosphere: Smooth daylight-to-twilight lighting transitions"
+      },
+      "additionals": [
+        {
+          "type": "image",
+          "url": "assets/card2.jpg",
+          "title": "Key Frame \u2014 Arrival Sequence"
+        },
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Key Frame \u2014 Sunset Facade"
+        },
+        {
+          "type": "image",
+          "url": "assets/card3.jpg",
+          "title": "Key Frame \u2014 Garden Orbit"
+        }
+      ]
+    },
+    "AW_int": {
+      "enabled": true,
+      "label": "Interior \u2022 Project-1",
+      "tag": "Interior",
+      "title": "Hillside Duplex Residence \u2014 Interior Walkthrough",
+      "cover": {
+        "type": "image",
+        "url": "assets/card5.jpg",
+        "thumbnail": "assets/card5.jpg"
+      },
+      "details": {
+        "keywords": [
+          "Steadicam Tour",
+          "Interior Walkthrough",
+          "Natural Sunbeam"
+        ],
+        "tools": [
+          "Lumion",
+          "Camtasia",
+          "SketchUp"
+        ],
+        "date": "2025",
+        "projectId": "PRJ-001",
+        "scale": "4,200 sq.ft \u2022 Interior Walkthrough",
+        "description": "\u2022 Format: Steadicam interior architectural walkthrough\n\u2022 Spatial Flow: Seamless transition from living lounge to dining & master suite\n\u2022 Detail Focus: Natural sunbeam dynamics and interior material reflections"
+      },
+      "additionals": [
+        {
+          "type": "image",
+          "url": "assets/card5.jpg",
+          "title": "Key Frame \u2014 Living to Dining"
+        },
+        {
+          "type": "image",
+          "url": "assets/card4.jpg",
+          "title": "Key Frame \u2014 Master Suite"
+        },
+        {
+          "type": "image",
+          "url": "assets/card1.jpg",
+          "title": "Key Frame \u2014 Staircase Reveal"
+        }
+      ]
+    }
+  }
+}
